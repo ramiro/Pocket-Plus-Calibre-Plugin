@@ -1,5 +1,6 @@
-**!!!!!!! the plugin is broken right now, we're trying to fix it (#9) !!!!!!!!**
-
+<h1 align="center">
+	!!!!!!! the plugin is broken right now, we're trying to fix it (#9) !!!!!!!!
+</h1>
 <h1 align="center">
 Pocket+ recipe for Calibre
 </h1>
