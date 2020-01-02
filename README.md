@@ -1,9 +1,9 @@
-<h3 align="center">
+<pre align="center">
 	!!! the plugin is broken right now, we're trying to fix it (#9) !!!
 	There is a solution how to get any Pocket running
 	https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/issues/9#issuecomment-515668865
 	I will soon to merge this working plugin into my plugin.
-</h3>
+</pre>
 
 <h1 align="center">
 Pocket+ recipe for Calibre
