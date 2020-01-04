@@ -90,6 +90,7 @@ If you have any problem read more [at Pocket](https://help.getpocket.com/custome
 # Changelog
 ## Current
 
+* 200104 Incorporate code from David Orchard (https://github.com/dlo9/calibre-recipes) to fix an issue with Pocket Authentication API
 * 170503 Download all images from every article by Stefan Wagner (@bompo)
 * 170503 Decide what to pull (all vs unread)
 * 170502 `Pocket + [Mon, 05 Dec 2016]`
