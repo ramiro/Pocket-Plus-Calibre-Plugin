@@ -109,9 +109,8 @@ Links on development of recipes:
 
 * https://manual.calibre-ebook.com/news.html
 * https://manual.calibre-ebook.com/news_recipe.html
+* https://manual.calibre-ebook.com/creating_plugins.html#more-plugin-examples
 
 The default Calibre plugin is here https://github.com/kovidgoyal/calibre/blob/master/recipes/readitlater.recipe
 
 `calibre-debug --paths --gui-debug ~/Library/Preferences/calibre/custom_recipes/Pocket__1004.recipe`
-
-https://manual.calibre-ebook.com/creating_plugins.html#more-plugin-examples
