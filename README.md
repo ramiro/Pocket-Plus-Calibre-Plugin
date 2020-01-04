@@ -10,10 +10,6 @@
 <h1 align="center">
 Pocket+ recipe for Calibre
 </h1>
-<p align="center">
-<b>Please "Star it" if you like it, so it would be easier to find it for others and to make me happy that the script useful not only for me. Or/and donate 😊</b></br>
-<img width=300px src="doc/starit.png"></br>
-
 
 <span class="badge-paypal"><a href="https://www.paypal.me/MarcinMagnus" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span> 
 <span class="badge-flattr"><a href="https://flattr.com/profile/mmagnus" title="Donate to this project using Flattr"><img src="https://img.shields.io/badge/flattr-donate-yellow.svg" alt="Flattr donate button" /></a></span>
@@ -25,8 +21,6 @@ Table of contents:
   * [Settings](#settings)
   * [Installation](#installation)
   * [Changelog](#changelog)
-
-
 
 [Pocket](https://getpocket.com/), previously known as Read It Later, is an application and service for managing a reading list of articles from the Internet. The application allows the user to save an article or web page to the cloud for later reading. The article is then sent to the user's Pocket list (synced to all of their devices) for offline reading. Pocket removes clutter from articles and allows the user to adjust text settings for easier reading [Source](https://en.wikipedia.org/wiki/Pocket_%28application%29).
 
