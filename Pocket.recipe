@@ -1,5 +1,27 @@
 #!/usr/bin/env python2
 # vim:ft=python tabstop=8 expandtab shiftwidth=4 softtabstop=4
+
+# Set up for tags ---------------------------------------------------------
+TAGS = [''] # get The latest, this is pretty much how the original version of the plugin works
+# uncomment this line below and define your own tags, e.g. `iphone`, `money` etc.
+#TAGS = ['', 'iphone', 'money'] #get "The latest" and articles tagged with `iphone` 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from calibre.constants import config_dir
 from calibre.utils.config import JSONConfig
 from calibre.web.feeds.news import BasicNewsRecipe
@@ -80,9 +102,9 @@ class Pocket(BasicNewsRecipe):
     category = 'info, custom, Pocket'
 
     # User-configurable settings -----------------------------------------------
-    tags = [''] # get The latest, this is pretty much how the original version of the plugin works
+    tags = TAGS # get The latest, this is pretty much how the original version of the plugin works
     # !! comment out this and put your tags !!
-    #tags = ['', 'iphone'] #get "The latest" and articles tagged with `iphone` 
+    # tags = ['', 'iphone'] #get "The latest" and articles tagged with `iphone` 
     title_with_tags = True # if True then the ebook filename will be like Pocket: INVEST P2P [Sun, 05 Jan 2020]
 
     oldest_article = 7
