@@ -15,6 +15,7 @@ Table of contents:
   * [Settings](#settings)
   * [Installation](#installation)
   * [Changelog](#changelog)
+  * [Tips](#tips)
   * [Development](#development)
 
 [Pocket](https://getpocket.com/), previously known as Read It Later, is an application and service for managing a reading list of articles from the Internet. The application allows the user to save an article or web page to the cloud for later reading. The article is then sent to the user's Pocket list (synced to all of their devices) for offline reading. Pocket removes clutter from articles and allows the user to adjust text settings for easier reading [Source](https://en.wikipedia.org/wiki/Pocket_%28application%29).
@@ -93,6 +94,12 @@ Report any issues here: https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/is
 
 * 160205 Modified version of the plugin to get (1) The latest (more or less as the original version of the plugin) (2) and your content organized by tags! 
 
+# Tips
+
+Don't forget that you can have multiple modified recipes and schedule each of them independently.
+
+![](doc/more.png)
+
 # Development
 Links on development of recipes:
 
@@ -103,3 +110,4 @@ Links on development of recipes:
 The default Calibre plugin is here https://github.com/kovidgoyal/calibre/blob/master/recipes/readitlater.recipe
 
 `calibre-debug --paths --gui-debug ~/Library/Preferences/calibre/custom_recipes/Pocket__1004.recipe`
+
