@@ -1,5 +1,5 @@
 <h1 align="center">
-Pocket with Tags recipe for Calibre
+Pocket+ (with Tags) recipe for Calibre
 </h1>
 
 <span class="badge-paypal"><a href="https://www.paypal.me/MarcinMagnus" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span> 
