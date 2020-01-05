@@ -1,19 +1,9 @@
-<span align="center">
-	<pre align="center">
-	!!! the plugin is broken right now, we're trying to fix it (#9) !!!
-	There is a solution how to get any Pocket running [1]
-	I will soon to merge this working plugin into my plugin.
-</pre>
-[1] https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/issues/9#issuecomment-515668865
-</span>
-
 <h1 align="center">
-Pocket+ recipe for Calibre
+Pocket with Tags recipe for Calibre
 </h1>
 
 <span class="badge-paypal"><a href="https://www.paypal.me/MarcinMagnus" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span> 
 <span class="badge-flattr"><a href="https://flattr.com/profile/mmagnus" title="Donate to this project using Flattr"><img src="https://img.shields.io/badge/flattr-donate-yellow.svg" alt="Flattr donate button" /></a></span>
-<span class="badge-gratipay"><a href="https://gratipay.com/Pocket-Plus-Calibre-Plugin/" title="Donate weekly to this project using Gratipay"><img src="https://img.shields.io/badge/gratipay-donate-yellow.svg" alt="Gratipay donate button" /></a></span>
 </p>
 
 Table of contents:
@@ -30,8 +20,7 @@ Table of contents:
 
 Follow the discussion at https://www.mobileread.com/forums/showthread.php?t=270602
 
-
-This is a fork of the original plugin.
+This is a fork of the original plugin and a merge of a fix by @dlo9.
 
 I modified the plugin to get an e-book including:
 
@@ -53,25 +42,18 @@ This is a fork of the original 2011 Calibre ReadItLater plugin.
 # Settings
 
 ```python
-    # Settings people change ------------------------------------------------------
-    max_articles_per_feed = 20
-    minimum_articles      = 1
-    mark_as_read_after_dl = False  # Set this to False for testing
-    sort_method           = 'newest'  # MUST be either 'oldest' or 'newest'
-    title_with_date       = True # if True Pocket+ [Tue, 02 May 2017]
-    to_pull               = 'all' #'unread' # or 'unread' What articles to pull? unread only or all?
-    compress_news_images  = False # True gives compressed images
 
-    # '' gives "The latest"! e.g. ['','iphone'] to get The latest and articles tagged with `iphone`
-    # [''] to get only The latest
-    tags = ['', 'iphone']
+    # User-configurable settings -----------------------------------------------
+    tags = [''] # get The latest, this is pretty much how the original version of the plugin works
+    # !! comment out this and put your tags !!
+    #tags = ['', 'iphone'] #get "The latest" and articles tagged with `iphone` 
+    title_with_tags = True # if True then the ebook filename will be like Pocket: INVEST P2P [Sun, 05 Jan 2020]
 
-    # Settings end -----------------------------------------------------------------
 ```
 
 To change settings, click on:
 
-	Fetch news -> Add custom news source -> Pocket+ (Edit this recipe)
+	Fetch news -> Add custom news source -> Pocket (Edit this recipe)
 
 and edit the Python code.
 
