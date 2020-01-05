@@ -20,6 +20,8 @@ except ImportError:
 __license__ = 'GPL v3'
 __copyright__ = '2019, David Orchard'
 
+
+
 class PocketConfig:
     __file_path = path.join(config_dir, 'custom_recipes', 'Pocket.json')
 
@@ -58,12 +60,15 @@ class PocketConfig:
         with open(self.__file_path, 'w') as config:
             json.dump(self.__dict__, config)
 
+
 class Pocket(BasicNewsRecipe):
     config = PocketConfig.from_file()
 
-    title = strftime('Pocket [%a, %d %b %Y]', localtime())
     __author__ = 'David Orchard'
     description = '''
+
+        Modified by Marcin Magnus.
+
         Fetches articles saved with <a href="https://getpocket.com/">Pocket</a> and archives them.<br>
     ''' + ('''
         Click <a href="https://getpocket.com/connected_applications">here</a>
@@ -74,12 +79,21 @@ class Pocket(BasicNewsRecipe):
     publisher = 'Pocket.com'
     category = 'info, custom, Pocket'
 
-    # User-configurable settings
-    oldest_article = 7
-    max_articles_per_feed = 100
-    archive_downloaded = True
-    series_name = 'Pocket'
+    # User-configurable settings -----------------------------------------------
+    tags = [''] # get The latest, this is pretty much how the original version of the plugin works
+    # !! comment out this and put your tags !!
+    #tags = ['', 'iphone'] #get "The latest" and articles tagged with `iphone` 
+    title_with_tags = True # if True then the ebook filename will be like Pocket: INVEST P2P [Sun, 05 Jan 2020]
 
+    oldest_article = 7
+    max_articles_per_feed = 10
+    archive_downloaded = False  
+    
+    series_name = 'Pocket' + ' ' + ' '.join(tags).upper()
+    sort_method = 'newest'  # MUST be either 'oldest' or 'newest'
+    to_pull = 'all' #'unread' # or 'unread' What articles to pull? unread only or all?
+    # --------------------------------------------------------------------------
+    
     # Inherited developer settings
     auto_cleanup = True
     no_stylesheets = True
@@ -91,6 +105,11 @@ class Pocket(BasicNewsRecipe):
     redirect_uri = 'https://calibre-ebook.com/'
     base_url = 'https://app.getpocket.com'
     to_archive = []
+
+    tags_title = ' '
+    if tags[-1] != '' and title_with_tags:  # ugly hack
+        tags_title = ':' + ' '.join(tags).upper() + ' '
+    title = strftime('Pocket' + tags_title + '[%a, %d %b %Y] ', localtime())
 
     def first_run(self):
         request = mechanize.Request("https://getpocket.com/v3/oauth/request",
@@ -146,51 +165,73 @@ class Pocket(BasicNewsRecipe):
     def parse_index(self):
         assert self.config.state == PocketConfig.AuthState.Authorized, "Not yet authorized"
         assert self.config.token, "No access token"
-        request = mechanize.Request("https://getpocket.com/v3/get",
-                (u'{{'
-                    '"consumer_key":"{0}",'
-                    '"access_token":"{1}",'
-                    '"count":"{2}",'
-                    '"since":"{3}",'
-                    '"state":"unread",'
-                    '"detailType":"complete",'
-                    '"sort":"newest"'
-                '}}').format(
-                    self.consumer_key,
-                    self.config.token,
-                    self.max_articles_per_feed,
-                    int(time()) - 86400 * self.oldest_article
-                ),
-                headers = {
-                    'Content-Type': 'application/json; charset=UTF8',
-                    'X-Accept': 'application/json'
+
+        articles = []
+        for tag in self.tags:
+            request = mechanize.Request("https://getpocket.com/v3/get",
+                    (u'{{'
+                        '"consumer_key":"{0}",'
+                        '"access_token":"{1}",'
+                        '"count":"{2}",'
+                        '"since":"{3}",'
+                        '"state":"{6}",'
+                        '"detailType":"complete",'
+                        '"sort":"{4}",'
+                        '"tag":"{5}"'
+                       '}}').format(
+                        self.consumer_key,
+                        self.config.token,
+                        self.max_articles_per_feed,
+                        int(time()) - 86400 * self.oldest_article,
+                        self.sort_method, 
+                        tag,
+                        self.to_pull,
+                    ),
+                    headers = {
+                        'Content-Type': 'application/json; charset=UTF8',
+                        'X-Accept': 'application/json'
+                    }
+                )
+
+            try:
+                response = self.browser.open(request)
+                response = json.load(response)
+            except HTTPError as e:
+                if e.code == 401:
+                    # Calibre access has been removed
+                    self.reauthorize()
+                    raise e
+
+            if not response['list']:
+                self.abort_recipe_processing('No unread articles in the Pocket account "{}"'.format(self.config.user))
+
+            if self.archive_downloaded and response['list']:
+                self.to_archive = [item['item_id'] for item in response['list'].values()]
+
+            if not response['list']:
+                #articles.append([])
+                pass
+            else:
+                arts = [
+                {
+                    'title': item['resolved_title'],
+                    'url': item['resolved_url'],
+                    'date': item['time_added'],
+                    'description': item['excerpt'],
                 }
-            )
+                for item in sorted(response['list'].values(), key = lambda x: x['sort_id'])
+                ]
 
-        try:
-            response = self.browser.open(request)
-            response = json.load(response)
-        except HTTPError as e:
-            if e.code == 401:
-                # Calibre access has been removed
-                self.reauthorize()
-            raise e
+                if not tag:
+                    tag = "The latest"
 
-        if not response['list']:
-            self.abort_recipe_processing('No unread articles in the Pocket account "{}"'.format(self.config.user))
-
-        if self.archive_downloaded and response['list']:
-            self.to_archive = [item['item_id'] for item in response['list'].values()]
-
-        return [('Unread', [
-            {
-                'title': item['resolved_title'],
-                'url': item['resolved_url'],
-                'date': item['time_added'],
-                'description': item['excerpt'],
-            }
-            for item in sorted(response['list'].values(), key = lambda x: x['sort_id'])
-        ] if response['list'] else [])]
+                articles.append((tag, arts))
+            ##list = [
+            #        (self.tag, arts),
+            #        ('New', arts)
+            #        ]
+        return articles
+    
 
     def reauthorize(self):
         self.config = PocketConfig();
@@ -253,3 +294,30 @@ class Pocket(BasicNewsRecipe):
     # BUG: https://bugs.launchpad.net/calibre/+bug/1838486
     def postprocess_book(self, oeb, opts, log):
         oeb.metadata.add('series', self.series_name)
+
+
+    def default_cover(self, cover_file):
+        """
+        Create a generic cover for recipes that don't have a cover
+        This override adds time to the cover
+        """
+        try:
+            from calibre.ebooks import calibre_cover
+            title = self.title if isinstance(self.title, unicode) else \
+                self.title.decode('utf-8', 'replace')
+
+            if self.tags and self.title_with_tags:
+                title = 'Pocket:' + ' '.join(self.tags).upper()
+            else:
+                title = 'Pocket'
+
+            date = strftime(self.timefmt)
+            time = strftime('%I:%M %p')
+            img_data = calibre_cover(title, date, time)
+            cover_file.write(img_data)
+            cover_file.flush()
+        except:
+            self.log.exception('Failed to generate default cover')
+            return False
+        return True
+        
