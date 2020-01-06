@@ -74,7 +74,7 @@ and edit the Python code.
 * You will be asked to grant access to your Plugin, click on "here" (to be able to click you have to close "Schedule news download" by clicking "OK" or "Cancel" first)
 
 ![](doc/grant.png)
-(if the window disappears, this is the link <https://getpocket.com/auth/authorize?request_token=0542174e-fa32-fad3-d757-29c0e5&redirect_uri=https://calibre-ebook.com/>)
+(if the window disappears, it might be behind the main window of Calibre)
 
 * When the access is granted, simply click of "Fetch News" again to start!
 
