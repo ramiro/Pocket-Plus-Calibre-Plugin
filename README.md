@@ -96,9 +96,14 @@ Report any issues here: https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/is
 
 # Tips
 
-Don't forget that you can have multiple modified recipes and schedule each of them independently.
+1. Don't forget that you can have multiple modified recipes and schedule each of them independently.
 
 ![](doc/more.png)
+
+2. You can also take a look here if you want someone else to send your articles for you, so you don't have to have access to your computer. Both services were tested by me and they can be recommended!
+
+- https://p2k.co
+- https://www.crofflr.com/#/home
 
 # Development
 Links on development of recipes:
