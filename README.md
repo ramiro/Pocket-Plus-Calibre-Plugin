@@ -114,5 +114,5 @@ Links on development of recipes:
 
 The default Calibre plugin is here https://github.com/kovidgoyal/calibre/blob/master/recipes/readitlater.recipe
 
-`calibre-debug --paths --gui-debug ~/Library/Preferences/calibre/custom_recipes/Pocket__1004.recipe`
+`calibre-debug --paths --gui-debug ~/Desktop/calibre.txt
 
