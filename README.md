@@ -74,7 +74,7 @@ and edit the Python code.
 * You will be asked to grant access to your Plugin, click on "here" (to be able to click you have to close "Schedule news download" by clicking "OK" or "Cancel" first)
 
 ![](doc/grant.png)
-(if the window disappears, this is the link <https://getpocket.com/auth/authorize?request_token=0542174e-fa32-fad3-d757-29c0e5&redirect_uri=https://calibre-ebook.com/>)
+(if the window disappears, it might be behind the main window of Calibre)
 
 * When the access is granted, simply click of "Fetch News" again to start!
 
@@ -96,9 +96,14 @@ Report any issues here: https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/is
 
 # Tips
 
-Don't forget that you can have multiple modified recipes and schedule each of them independently.
+1. Don't forget that you can have multiple modified recipes and schedule each of them independently.
 
 ![](doc/more.png)
+
+2. You can also take a look here if you want someone else to send your articles for you, so you don't have to have access to your computer. Both services were tested by me and they can be recommended!
+
+- https://p2k.co
+- https://www.crofflr.com/#/home
 
 # Development
 Links on development of recipes:
