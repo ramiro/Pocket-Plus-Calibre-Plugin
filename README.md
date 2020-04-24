@@ -12,6 +12,7 @@ Pocket+ recipe for Calibre
 
 Table of contents:
 
+  * [Workflow](#workflow)
   * [Settings](#settings)
   * [Installation](#installation)
   * [Changelog](#changelog)
@@ -35,13 +36,40 @@ Now, you get **The latest** and **The content organized by your tags**:
 
 <table><tr><td><img src="doc/02.png" alt="" style="width: 200px;"/></td><td><img src="doc/03.png" alt="" style="width: 200px;"/></td></tr></table>
 
-.. before:
-
-<img src="doc/01.png" alt="" style="width: 200px;"/>
-
-At the moment you have to define your own tags in the code (variable `self.tags`). It should be changed at some point.
-
 This is a fork of the original 2011 Calibre ReadItLater plugin.
+
+# Workflow
+(some potential workflow that @mmagnus is using at the moment)
+
+*MY CURRENT WORKFLOW*
+
+I often (each day or every second day) send new things [1] from my Pocket to my Kindle. When I research some particular topic I use tags to fetch only articles related to the given topic,  e.g., “python testing”, and then I have a nice book only on that topic. For each of this type of books you can just copy paste my plugin and change the variables at the top of the file to have a few lines of action in your workflow.
+
+```python
+# [1]
+TAGS = [''] 
+ARCHIVE_DOWNLOADED = True
+MAX_ARTICLES_PER_FEED = 100
+SORT_METHOD  = 'newest'
+TO_PULL = 'unread' 
+	
+# [2]
+TAGS = ['python testing']
+ARCHIVE_DOWNLOADED = True
+MAX_ARTICLES_PER_FEED = 100
+SORT_METHOD  = 'newest'
+TO_PULL = 'all'
+```
+
+*AUTOMATED [no Calibre]*
+One thing, this plugin needs that the Calibre is open and running. If you want someone else to send your articles for you, you can use these services.  This is pretty cool because you have to have access to your computer. Both services were tested by me and they can be recommended! At the moment I prefer to be in 100% control of what and when is sent to my Kindle so I use only the plugin.
+
+https://p2k.co https://www.crofflr.com/#/home At the moment
+
+*PUSH TO KINDLE NOW AS ONE FILE*
+Sometimes I want to read something NOW or as a single e-book and don't want to go through Calibre, then I use these plugin to push an article directly to Kindle. 
+
+https://www.fivefilters.org/push-to-kindle/ https://www.amazon.com/gp/sendtokindle/chrome
 
 # Settings
 
@@ -114,5 +142,6 @@ Links on development of recipes:
 
 The default Calibre plugin is here https://github.com/kovidgoyal/calibre/blob/master/recipes/readitlater.recipe
 
-`calibre-debug --paths --gui-debug ~/Library/Preferences/calibre/custom_recipes/Pocket__1004.recipe`
+    calibre-debug --paths --gui-debug ~/Desktop/calibre.txt
+
 
