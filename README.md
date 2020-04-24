@@ -41,7 +41,7 @@ This is a fork of the original 2011 Calibre ReadItLater plugin.
 # Workflow
 (some potential workflow that @mmagnus is using at the moment)
 
-*MY CURRENT WORKFLOW*
+**MY CURRENT WORKFLOW**
 
 I often (each day or every second day) send new things [1] from my Pocket to my Kindle. When I research some particular topic I use tags to fetch only articles related to the given topic,  e.g., “python testing”, and then I have a nice book only on that topic. For each of this type of books you can just copy paste my plugin and change the variables at the top of the file to have a few lines of action in your workflow.
 
@@ -61,15 +61,16 @@ SORT_METHOD  = 'newest'
 TO_PULL = 'all'
 ```
 
-*AUTOMATED [no Calibre]*
-One thing, this plugin needs that the Calibre is open and running. If you want someone else to send your articles for you, you can use these services.  This is pretty cool because you have to have access to your computer. Both services were tested by me and they can be recommended! At the moment I prefer to be in 100% control of what and when is sent to my Kindle so I use only the plugin.
+**AUTOMATED [no Calibre]**
 
-https://p2k.co https://www.crofflr.com/#/home At the moment
+One thing, this plugin needs that the Calibre is open and running. If you want someone else to send your articles for you, you can use these services. This is pretty cool because you don't have to have access to your computer. Both services were tested by me and I can be recommended! At the moment I prefer to be in 100% control of what and when is sent to my Kindle so I use only the plugin from this repo.
 
-*PUSH TO KINDLE NOW AS ONE FILE*
-Sometimes I want to read something NOW or as a single e-book and don't want to go through Calibre, then I use these plugin to push an article directly to Kindle. 
+https://p2k.co https://www.crofflr.com/#/home 
 
-https://www.fivefilters.org/push-to-kindle/ https://www.amazon.com/gp/sendtokindle/chrome
+**PUSH TO KINDLE NOW AS ONE FILE**
+Sometimes I want to read something NOW or as a single e-book and don't want to go through Calibre, then I use these plugins to push an article directly to Kindle. 
+
+https://www.fivefilters.org/push-to-kindle/ (for Safari) https://www.amazon.com/gp/sendtokindle/chrome (for Chrome)
 
 # Settings
 
