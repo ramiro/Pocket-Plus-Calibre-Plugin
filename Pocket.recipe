@@ -1,17 +1,24 @@
 #!/usr/bin/env python
 # vim:ft=python tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
-# SET UP FOR TAGS ###########################################################
-# uncomment this line below and define your own tags, e.g. `iphone`, `money` etc.
-#TAGS = ['', 'iphone', 'money'] #get "The latest" and articles tagged with `iphone` 
-#, 'investing','packaging'] # ''',  investing'] # get The latest, this is pretty much how the original version of the plugin works
+# CONFIGURATION  ###########################################################
+# Define your own tags, e.g. 'iphone', 'money' etc.,
+# if you want to get the articles untagged with the provided tags then
+# set INCLUDE_UNTAGGED to True
+TAGS = ['tag1', 'tag2']
+# TAGS = ['investing', 'covid19', 'python']  # @mmagnus tags for example
+INCLUDE_UNTAGGED = True
+ARCHIVE_DOWNLOADED = True # MUST be True or False
+MAX_ARTICLES_PER_FEED = 30
 # MUST be either 'oldest' or 'newest'
-# unread' #'unread' # or 'unread' What articles to pull? unread only or all?
-TAGS = [''] # , 'Vonnegut']
-ARCHIVE_DOWNLOADED = True
-MAX_ARTICLES_PER_FEED = 100
 SORT_METHOD  = 'newest'
-TO_PULL = 'unread' # all
+# MUST be 'unread' or 'all'; What articles to pull? unread only or all?
+TO_PULL = 'unread'
+# MUST be True or False, if True then the ebook filename will be like Pocket: INVEST P2P [Sun, 05 Jan 2020];
+# for many tags this might be to long, if you make a single tag ebook this might be super fun!
+TITLE_WITH_TAGS = False 
+# MUST be True or False, True will give you something like `Pocket [Wed, 13 May 2020]`; False `Pocket`
+TITLE_WITH_DATE = False 
 #############################################################################
 
 
@@ -117,15 +124,16 @@ class Pocket(BasicNewsRecipe):
     tags = TAGS # get The latest, this is pretty much how the original version of the plugin works
     # !! comment out this and put your tags !!
     # tags = ['', 'iphone'] #get "The latest" and articles tagged with `iphone` 
-    title_with_tags = True # if True then the ebook filename will be like Pocket: INVEST P2P [Sun, 05 Jan 2020]
+    
 
     oldest_article = 2 # 7?
     max_articles_per_feed = MAX_ARTICLES_PER_FEED
     archive_downloaded = ARCHIVE_DOWNLOADED
-    
+    include_untagged = INCLUDE_UNTAGGED    
     series_name = 'Pocket'#  + ' ' + ' '.join(tags).upper()
     sort_method = SORT_METHOD
     to_pull = TO_PULL
+
     # --------------------------------------------------------------------------
     
     # Inherited developer settings
@@ -141,9 +149,12 @@ class Pocket(BasicNewsRecipe):
     to_archive = []
 
     tags_title = ' '
-    if tags[-1] != '' and title_with_tags:  # ugly hack
+    if tags[-1] != '' and TITLE_WITH_TAGS:  # ugly hack
         tags_title = ':' + ' '.join(tags).upper() + ' '
-    title = strftime('Pocket' + tags_title + '[%a, %d %b %Y] ', localtime())
+    if TITLE_WITH_DATE:
+        title = strftime('Pocket' + tags_title + '[%a, %d %b %Y] ', localtime())
+    else:
+        title = "Pocket"
 
     def first_run(self):
         request = mechanize.Request("https://getpocket.com/v3/oauth/request",
@@ -201,6 +212,10 @@ class Pocket(BasicNewsRecipe):
         assert self.config.token, "No access token"
 
         articles = []
+
+        if self.include_untagged:
+            self.tags.append('') # ugly hack
+
         for tag in self.tags:
             request = mechanize.Request("https://getpocket.com/v3/get",
                     (u'{{'
@@ -237,33 +252,31 @@ class Pocket(BasicNewsRecipe):
                     raise e
 
             if not response['list']:
-                self.abort_recipe_processing('No unread articles in the Pocket account "{}"'.format(self.config.user))
+                # self.abort_recipe_processing('No unread articles in the Pocket account "{}"'.format(self.config.user))
+                continue
 
             if self.archive_downloaded and response['list']:
                 self.to_archive = [item['item_id'] for item in response['list'].values()]
 
             if not response['list']:
-                #articles.append([])
                 pass
             else:
-                arts = [
-                {
+                arts = []
+                for item in sorted(response['list'].values(), key = lambda x: x['sort_id']):
+                    arts.append({
                     'title': item['resolved_title'],
                     'url': item['resolved_url'],
                     'date': item['time_added'],
-                    'description': item['excerpt'],
-                }
-                for item in sorted(response['list'].values(), key = lambda x: x['sort_id'])
-                ]
+                    'description': item['excerpt'],})
 
                 if not tag:
-                    tag = "The latest"
+                    tag = "Untagged"
 
-                articles.append((tag, arts))
-            ##list = [
-            #        (self.tag, arts),
-            #        ('New', arts)
-            #        ]
+                if arts: # if no arts, then don't create an empty entry with the tag only!
+                    articles.append((tag, arts))
+
+        if not articles:
+            self.abort_recipe_processing('No articles in the Pocket account %s to download' % (self.config.user)) #, ' '.join(self.tags))) \n[tags: %s]
         return articles
     
 
