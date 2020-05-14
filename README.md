@@ -38,6 +38,8 @@ Now, you get **The latest** and **The content organized by your tags**:
 
 This is a fork of the original 2011 Calibre ReadItLater plugin.
 
+<span style="color:red">(Mind some of this documentation is outdated with the newest version of the plugin [v2.3](https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/releases/tag/v2.3), to be fixed soon, see the top of the plugin for new configuration)</span>
+
 # Workflow
 (some potential workflow that @mmagnus is using at the moment)
 
