@@ -49,7 +49,7 @@ I often (each day or every second day) send new things [1] from my Pocket to my 
 
 ```python
 # [1]
-TAGS = [''] 
+TAGS = [] 
 ARCHIVE_DOWNLOADED = True
 MAX_ARTICLES_PER_FEED = 100
 SORT_METHOD  = 'newest'
@@ -76,16 +76,6 @@ Sometimes I want to read something NOW or as a single e-book and I don't want to
 https://www.fivefilters.org/push-to-kindle/ (for Safari, Chrome, Firefox) https://www.amazon.com/gp/sendtokindle/chrome (for Chrome)
 
 # Settings
-
-```python
-
-    # User-configurable settings -----------------------------------------------
-    tags = [''] # get The latest, this is pretty much how the original version of the plugin works
-    # !! comment out this and put your tags !!
-    #tags = ['', 'iphone'] #get "The latest" and articles tagged with `iphone` 
-    title_with_tags = True # if True then the ebook filename will be like Pocket: INVEST P2P [Sun, 05 Jan 2020]
-
-```
 
 To change settings, click on:
 

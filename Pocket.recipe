@@ -1,29 +1,29 @@
 #!/usr/bin/env python
 # vim:ft=python tabstop=8 expandtab shiftwidth=4 softtabstop=4
 from __future__ import print_function
-__version__ = '2.3.2'
+__version__ = '2.4.0'
 """
-TAGS (list of strings) configure tags, e.g. 'iphone', 'money' etc.,
-if you want to get the articles untagged with the provided tags then
-set INCLUDE_UNTAGGED to True to get all the rest articles in this sections
+**TAGS** (list of strings or empty list: []) if [] (empty list) then the plugin will connect Pocket and fetch articles based on the configuration of the plugin. Next, the plugin will get tags of these articles and group them into sections in the final ebook.
 
-ARCHIVE_DOWNLOADED (True or False) do you want to archive articles after fetching 
+**INCLUDE_UNTAGGED** (True or False) if True then put all fetched and untagged articles in the last section 'Untagged'. If False then skip these articles and don't create the section 'Untagged'.
 
-MAX_ARTICLES_PER_FEED (number) how many articles do you want to fetch for FEED (FEED could be also 
+**ARCHIVE_DOWNLOADED** (True or False) do you want to archive articles after fetching 
+
+**MAX_ARTICLES_PER_FEED** (number) how many articles do you want to fetch for FEED (FEED could be also 
 considered as TAG, so for each TAG you this value will be applied.
 
-SORT_METHOD ('oldest' or 'newest') way how the articles are sorted
+**SORT_METHOD** ('oldest' or 'newest') way how the articles are sorted
 
-OLDEST_ARTICLE (number) fetch articles added (modified) in Pocket for number of days, 7 will give you articles added/modified in Pocket for the last week 
+**OLDEST_ARTICLE** (number) fetch articles added (modified) in Pocket for number of days, 7 will give you articles added/modified in Pocket for the last week 
  
-TO_PULL ('all' or 'unread') What articles to pull? unread only or all?
+**TO_PULL** ('all' or 'unread') What articles to pull? unread only or all?
 
-TITLE_WITH_TAGS (True or False) if True will the ebook filename will be like Pocket: INVEST P2P [Sun, 05 Jan 2020] for many tags this might be to long, if you make a single tag ebook this might be super fun!
+**TITLE_WITH_TAGS** (True or False) if True will the ebook filename will be like Pocket: INVEST P2P [Sun, 05 Jan 2020] for many tags this might be to long, if you make a single tag ebook this might be super fun!
 
-TITLE_WITH_DATE (True or False) True will give you something like `Pocket [Wed, 13 May 2020]`; False `Pocket`
+**TITLE_WITH_DATE** (True or False) True will give you something like `Pocket [Wed, 13 May 2020]`; False `Pocket`
 """
 # CONFIGURATION ###########################################################
-TAGS = ['tag1', 'tag2']
+TAGS = [] # [] or ['tag1', 'tag2']
 INCLUDE_UNTAGGED = True
 ARCHIVE_DOWNLOADED = True
 MAX_ARTICLES_PER_FEED = 30 
@@ -33,8 +33,6 @@ TO_PULL = 'unread'
 TITLE_WITH_TAGS = False
 TITLE_WITH_DATE = False
 #############################################################################
-
-
 
 
 
@@ -158,9 +156,12 @@ class Pocket(BasicNewsRecipe):
     base_url = 'https://app.getpocket.com'
     to_archive = []
 
-    tags_title = ' '
-    if tags[-1] != '' and TITLE_WITH_TAGS:  # ugly hack
-        tags_title = ':' + ' '.join(tags).upper() + ' '
+    # TITLE_WITH_TAGS
+    if tags:
+        if tags[-1] != '' and TITLE_WITH_TAGS:  # ugly hack
+            tags_title = ':' + ' '.join(tags).upper() + ' '
+
+    # TITLE_WITH_DATE    
     if TITLE_WITH_DATE:
         title = strftime('Pocket' + tags_title + '[%a, %d %b %Y] ', localtime())
     else:
@@ -223,9 +224,58 @@ class Pocket(BasicNewsRecipe):
 
         articles = []
 
+        ############ GET TAGS ###################
+        if self.tags:
+            pass  # so if you have any tags, skip this
+        else:
+            request = mechanize.Request("https://getpocket.com/v3/get",
+                    (u'{{'
+                        '"consumer_key":"{0}",'
+                        '"access_token":"{1}",'
+                        '"count":"{2}",'
+                        '"since":"{3}",'
+                        '"state":"{5}",'
+                        '"detailType":"complete",'
+                        '"sort":"{4}"' '}}').format(
+                        self.consumer_key,
+                        self.config.token,
+                        self.max_articles_per_feed * 1000,  # something "unlimited"
+                        int(time()) - 86400 * self.oldest_article,
+                        self.sort_method, 
+                        self.to_pull,
+                    ),
+                    headers = {
+                        'Content-Type': 'application/json; charset=UTF8',
+                        'X-Accept': 'application/json'
+                    }
+                )
+
+            try:
+                response = self.browser.open(request)
+                response = json.load(response)
+            except HTTPError as e:
+                if e.code == 401:
+                    # Calibre access has been removed
+                    self.reauthorize()
+                    raise e
+
+            if not response['list']:
+                self.abort_recipe_processing('No unread articles in the Pocket account "{}"'.format(self.config.user))
+            else:
+                self.tags = []
+                for item in response['list']:
+                    try:
+                        tag = response['list'][item]['tags'].keys()[0]
+                    except KeyError:
+                        continue
+                    if tag not in self.tags:
+                        self.tags.append(tag)             
+            sorted(self.tags, key=unicode.lower)
+
         if self.include_untagged:
             self.tags.append('') # ugly hack
 
+        ###### PROCESS ########
         for tag in self.tags:
             request = mechanize.Request("https://getpocket.com/v3/get",
                     (u'{{'
