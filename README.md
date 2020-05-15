@@ -3,7 +3,7 @@
 Pocket+ recipe for Calibre
 </h1>
 
-[![tag](https://img.shields.io/github/release/mmagnus/Pocket-Plus-Calibre-Plugin.svg)](https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/releases)<span class="badge-paypal"><a href="https://www.paypal.me/MarcinMagnus" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span> 
+[![tag](https://img.shields.io/github/release/mmagnus/Pocket-Plus-Calibre-Plugin.svg)](https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/releases) <span class="badge-paypal"><a href="https://www.paypal.me/MarcinMagnus" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span> 
 <span class="badge-flattr"><a href="https://flattr.com/profile/mmagnus" title="Donate to this project using Flattr"><img src="https://img.shields.io/badge/flattr-donate-yellow.svg" alt="Flattr donate button" /></a></span>
 </br></br>
 <b>This plugin allows users to get their Pocket-ed articles with Calibre and send them as an e-book to their prefered e-book reader. You can schedule this process and every day get the freshest e-book with your Pocket-ed articles!</b>
