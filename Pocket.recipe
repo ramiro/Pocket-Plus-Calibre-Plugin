@@ -157,6 +157,7 @@ class Pocket(BasicNewsRecipe):
     to_archive = []
 
     # TITLE_WITH_TAGS
+    tags_title = ' '
     if tags:
         if tags[-1] != '' and TITLE_WITH_TAGS:  # ugly hack
             tags_title = ':' + ' '.join(tags).upper() + ' '
