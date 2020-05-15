@@ -110,10 +110,7 @@ Report any issues here: https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/is
 * 170503 Download all images from every article by Stefan Wagner (@bompo)
 * 170503 Decide what to pull (all vs unread)
 * 170502 `Pocket + [Mon, 05 Dec 2016]`
-* 160817 Add links to articles.
-
-<img src="doc/screenshot_2016_08_29T20_43_53_0200.png" alt="" style="width:100px;"/>
-
+* 160817 Add links to articles
 * 160205 Modified version of the plugin to get (1) The latest (more or less as the original version of the plugin) (2) and your content organized by tags! 
 
 # Tips
