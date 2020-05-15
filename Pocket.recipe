@@ -3,7 +3,7 @@
 from __future__ import print_function
 __version__ = '2.4.0'
 """
-**TAGS** (list of strings or empty list: []) if [] (empty list) then the plugin will connect Pocket and fetch articles based on the configuration of the plugin. Next, the plugin will get tags of these articles and group them into sections in the final ebook.
+**TAGS** (list of strings or empty list: []) if [] (empty list) then the plugin will connect Pocket and fetch articles based on the configuration of the plugin. Next, the plugin will get tags of these articles and group them into sections in the final ebook. If TAGS has elements, e.g., TAGS = ['tag1', 'tag2'] then only these tags will be fetched from Pocket.
 
 **INCLUDE_UNTAGGED** (True or False) if True then put all fetched and untagged articles in the last section 'Untagged'. If False then skip these articles and don't create the section 'Untagged'.
 
