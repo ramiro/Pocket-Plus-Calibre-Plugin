@@ -38,8 +38,6 @@ Now, you get **The latest** and **The content organized by your tags**:
 
 This is a fork of the original 2011 Calibre ReadItLater plugin.
 
-<b style="color:red">(Mind some of this documentation is outdated with the newest version of the plugin [v2.3](https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/releases/tag/v2.3), to be fixed soon, see the top of the plugin for new configuration)</b>
-
 # Workflow
 (some potential workflow that @mmagnus is using at the moment)
 
@@ -106,6 +104,8 @@ Report any issues here: https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/is
 
 # Changelog
 
+* 200515 [v2.4.0] Auto tags! Automatically group articles into Sections based on Pocket's tags.
+* 200514 [v2.3.x] Redesigned tags system, attempt to fix `sort_id` problem, move OLDEST_ARTICLE to the top
 * 200104 Incorporate code from David Orchard (@dlo9, https://github.com/dlo9/calibre-recipes) to fix an issue with Pocket Authentication API
 * 170503 Download all images from every article by Stefan Wagner (@bompo)
 * 170503 Decide what to pull (all vs unread)
