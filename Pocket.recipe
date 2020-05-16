@@ -141,7 +141,7 @@ class Pocket(BasicNewsRecipe):
     series_name = 'Pocket'
     sort_method = SORT_METHOD
     to_pull = TO_PULL
-
+    masthead_url = "https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/raw/master/doc/masthead.png"
     # --------------------------------------------------------------------------
     
     # Inherited developer settings
