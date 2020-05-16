@@ -169,6 +169,8 @@ class Pocket(BasicNewsRecipe):
     base_url = 'https://app.getpocket.com'
     to_archive = []
 
+    simultaneous_downloads = 10
+    
     # TITLE_WITH_TAGS
     tags_title = ' '
     if tagsList:
