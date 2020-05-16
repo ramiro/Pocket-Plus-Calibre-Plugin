@@ -133,7 +133,10 @@ Links on development of recipes:
 * https://manual.calibre-ebook.com/news.html
 * https://manual.calibre-ebook.com/news_recipe.html
 * https://manual.calibre-ebook.com/creating_plugins.html#more-plugin-examples
+* https://manual.calibre-ebook.com/news.html#tips-for-developing-new-recipes
 
 The default Calibre plugin is here https://github.com/kovidgoyal/calibre/blob/master/recipes/readitlater.recipe
 
     calibre-debug --paths --gui-debug ~/Desktop/calibre.txt
+
+    ebook-convert Pocket.recipe .epub --test -vv --debug-pipeline debug && open Pocket.epub
