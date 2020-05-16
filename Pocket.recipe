@@ -140,6 +140,8 @@ class Pocket(BasicNewsRecipe):
     title = "Pocket"
     # timefmt = '' # uncomment to remove date from the filenames, if commented then you will get something like `Pocket [Wed, 13 May 2020]`
     masthead_url = "https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/raw/master/doc/masthead.png"
+    # will make square cover; this will replace text and cover of the default
+    # cover_url = "https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/raw/master/doc/cover.png"
     # --------------------------------------------------------------------------
     
     # Inherited developer settings
