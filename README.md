@@ -3,7 +3,7 @@
 Pocket+ recipe for Calibre
 </h1>
 
-[![tag](https://img.shields.io/github/release/mmagnus/Pocket-Plus-Calibre-Plugin.svg)](https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/releases)<span class="badge-paypal"><a href="https://www.paypal.me/MarcinMagnus" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span> 
+[![tag](https://img.shields.io/github/release/mmagnus/Pocket-Plus-Calibre-Plugin.svg)](https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/releases) <span class="badge-paypal"><a href="https://www.paypal.me/MarcinMagnus" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span> 
 <span class="badge-flattr"><a href="https://flattr.com/profile/mmagnus" title="Donate to this project using Flattr"><img src="https://img.shields.io/badge/flattr-donate-yellow.svg" alt="Flattr donate button" /></a></span>
 </br></br>
 <b>This plugin allows users to get their Pocket-ed articles with Calibre and send them as an e-book to their prefered e-book reader. You can schedule this process and every day get the freshest e-book with your Pocket-ed articles!</b>
@@ -24,6 +24,8 @@ Table of contents:
 [Calibre](http://calibre-ebook.com/) is a free and open source e-book library management application developed by users of e-books for users of e-books. The programs also allows users to create own e-books and syncing with a variaty of e-book readers (e.g. Kindle, that's how I got the screenshots below) [Source](https://en.wikipedia.org/wiki/Calibre_%28software%29). Calibre has a plugin management system and ..
 
 Follow the discussion at https://www.mobileread.com/forums/showthread.php?t=270602
+
+If you have no idea where to start, take a look here https://www.howtogeek.com/115178/how-to-convert-news-feeds-to-ebooks-with-calibre/ this is an explantion how to use Calibre to send news to your Kindle.
 
 This is a fork of the original plugin and a merge of a fix by [@dlo9](https://github.com/dlo9).
 
@@ -110,10 +112,7 @@ Report any issues here: https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/is
 * 170503 Download all images from every article by Stefan Wagner (@bompo)
 * 170503 Decide what to pull (all vs unread)
 * 170502 `Pocket + [Mon, 05 Dec 2016]`
-* 160817 Add links to articles.
-
-<img src="doc/screenshot_2016_08_29T20_43_53_0200.png" alt="" style="width:100px;"/>
-
+* 160817 Add links to articles
 * 160205 Modified version of the plugin to get (1) The latest (more or less as the original version of the plugin) (2) and your content organized by tags! 
 
 # Tips
