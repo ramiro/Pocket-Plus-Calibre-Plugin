@@ -25,6 +25,8 @@ Table of contents:
 
 Follow the discussion at https://www.mobileread.com/forums/showthread.php?t=270602
 
+If you have no idea where to start, take a look here https://www.howtogeek.com/115178/how-to-convert-news-feeds-to-ebooks-with-calibre/ this is an explantion how to use Calibre to send news to your Kindle.
+
 This is a fork of the original plugin and a merge of a fix by [@dlo9](https://github.com/dlo9).
 
 I modified the plugin to get an e-book including:
