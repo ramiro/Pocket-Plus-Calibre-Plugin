@@ -175,12 +175,6 @@ class Pocket(BasicNewsRecipe):
         if tagsList[-1] != '' and TITLE_WITH_TAGS:  # ugly hack
             tags_title = ':' + ' '.join(tagsList).upper() + ' '
 
-    # TITLE_WITH_DATE    
-    if TITLE_WITH_DATE:
-        title = strftime('Pocket' + tags_title + '[%a, %d %b %Y] ', localtime())
-    else:
-        title = "Pocket"
-
     def first_run(self):
         request = mechanize.Request("https://getpocket.com/v3/oauth/request",
                 (u'{{'
@@ -240,6 +234,9 @@ class Pocket(BasicNewsRecipe):
         articles_to_ignore = [] #articles that should be ignored because they are tagged with a tag in TAGS_EXCEPTIONS
 
         ############ GET TAGS ###################
+        # ugly implementation because this is just a copy what happens next
+        # to be refactor at some point
+        #
         if self.tagsList:
             pass  # so if you have any tags, skip this
         else:
