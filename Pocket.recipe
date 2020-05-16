@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim:ft=python tabstop=8 expandtab shiftwidth=4 softtabstop=4
 from __future__ import print_function
-__version__ = '2.4.0'
+__version__ = '2.4.1'
 """
 **TAGS** (list of strings or empty list: []) if [] (empty list) then the plugin will connect Pocket and fetch articles based on the configuration of the plugin. Next, the plugin will get tags of these articles and group them into sections in the final ebook. If TAGS has elements, e.g., TAGS = ['tag1', 'tag2'] then only these tags will be fetched from Pocket.
 
@@ -133,7 +133,7 @@ class Pocket(BasicNewsRecipe):
     category = 'info, custom, Pocket'
 
     # User-configurable settings -----------------------------------------------
-    tags = TAGS 
+    tagsList = TAGS 
     oldest_article = OLDEST_ARTICLE
     max_articles_per_feed = MAX_ARTICLES_PER_FEED
     archive_downloaded = ARCHIVE_DOWNLOADED
@@ -145,22 +145,26 @@ class Pocket(BasicNewsRecipe):
     # --------------------------------------------------------------------------
     
     # Inherited developer settings
-    auto_cleanup = True
-    no_stylesheets = True
-    use_embedded_content = False
-    ignore_duplicate_articles = {'url'}
-
+    """ "auto_cleanup" is usually great at picking out the relevant content from a variety of websites, so you do not need to manually clean up each website. As a result you can use feeds from different websites even if the articles have very different structures. Sometimes however, "auto_cleanup" can be over zealous and remove content that is indeed relevant like a picture. To fix this you need to understand a little bit of HTML. You need to use "firebug" in firefox or a similar tool to find out the tags corresponding to the part that you would like to remain. <http://blog.calibre-ebook.com/2011/10/custom-news-fetching.html>"""
+    # great source of info <https://github.com/kovidgoyal/calibre/blob/master/src/calibre/web/feeds/news.py>
+    auto_cleanup = True  # The "auto_cleanup" uses statistical analysis to extract the useful content in the news website or blog.
+    no_stylesheets = True  # remove css from the original site
+    use_embedded_content = False # 
+    ignore_duplicate_articles = {'url'} # can be also 'title'
+    
     # Custom developer settings
     consumer_key = '87006-2ecad30a91903f54baf0ee05'
     redirect_uri = 'https://calibre-ebook.com/'
     base_url = 'https://app.getpocket.com'
     to_archive = []
 
+    publication_type = 'Magazine'
+    
     # TITLE_WITH_TAGS
     tags_title = ' '
-    if tags:
-        if tags[-1] != '' and TITLE_WITH_TAGS:  # ugly hack
-            tags_title = ':' + ' '.join(tags).upper() + ' '
+    if tagsList:
+        if tagsList[-1] != '' and TITLE_WITH_TAGS:  # ugly hack
+            tags_title = ':' + ' '.join(tagsList).upper() + ' '
 
     # TITLE_WITH_DATE    
     if TITLE_WITH_DATE:
@@ -226,7 +230,7 @@ class Pocket(BasicNewsRecipe):
         articles = []
 
         ############ GET TAGS ###################
-        if self.tags:
+        if self.tagsList:
             pass  # so if you have any tags, skip this
         else:
             request = mechanize.Request("https://getpocket.com/v3/get",
@@ -263,21 +267,21 @@ class Pocket(BasicNewsRecipe):
             if not response['list']:
                 self.abort_recipe_processing('No unread articles in the Pocket account "{}"'.format(self.config.user))
             else:
-                self.tags = []
+                self.tagsList = []
                 for item in response['list']:
                     try:
-                        tag = response['list'][item]['tags'].keys()[0]
+                        tagItem = response['list'][item]['tags'].keys()[0]
                     except KeyError:
                         continue
-                    if tag not in self.tags:
-                        self.tags.append(tag)             
-            sorted(self.tags, key=unicode.lower)
+                    if tagItem not in self.tagsList:
+                        self.tagsList.append(tagItem)      
+            sorted(self.tagsList, key=unicode.lower)
 
         if self.include_untagged:
-            self.tags.append('') # ugly hack
+            self.tagsList.append('') # ugly hack
 
         ###### PROCESS ########
-        for tag in self.tags:
+        for tagItem in self.tagsList:
             request = mechanize.Request("https://getpocket.com/v3/get",
                     (u'{{'
                         '"consumer_key":"{0}",'
@@ -293,8 +297,8 @@ class Pocket(BasicNewsRecipe):
                         self.config.token,
                         self.max_articles_per_feed,
                         int(time()) - 86400 * self.oldest_article,
-                        self.sort_method, 
-                        tag,
+                        self.sort_method,
+                        tagItem,
                         self.to_pull,
                     ),
                     headers = {
@@ -326,21 +330,20 @@ class Pocket(BasicNewsRecipe):
                 for item in response['list'].values(): # .values() sorted(response['list'].values(), key = lambda x: x['sort_id'])
                     try: # KeyError: u'resolved_title' error fix?
                         arts.append({
-                        'title': item['resolved_title'],
-                        'url': item['resolved_url'],
-                        'date': item['time_added'],
-                        'description': item['excerpt'],})
+                            'title': item['resolved_title'],
+                            'url': item['resolved_url'],
+                            'date': item['time_added'],
+                            'description': item['excerpt'],})
                     except KeyError:
-
                         print(response['list'], file=sys.stderr)
 
                         pass
                     
-                if not tag:
-                    tag = "Untagged"
+                if not tagItem:
+                    tagItem = "Untagged"
 
                 if arts: # if no arts, then don't create an empty entry with the tag only!
-                    articles.append((tag, arts))
+                    articles.append((tagItem, arts))
 
         if not articles:
             self.abort_recipe_processing('No articles in the Pocket account %s to download' % (self.config.user)) #, ' '.join(self.tags))) \n[tags: %s]
@@ -420,7 +423,7 @@ class Pocket(BasicNewsRecipe):
             title = self.title if isinstance(self.title, unicode) else \
                 self.title.decode('utf-8', 'replace')
 
-            if self.tags and self.title_with_tags:
+            if self.tagsList and self.tags_title:
                 title = 'Pocket:' + ' '.join(self.tags).upper()
             else:
                 title = 'Pocket'
