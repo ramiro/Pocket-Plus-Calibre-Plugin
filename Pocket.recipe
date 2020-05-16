@@ -20,7 +20,6 @@ considered as TAG, so for each TAG you this value will be applied.
 
 **TITLE_WITH_TAGS** (True or False) if True will the ebook filename will be like Pocket: INVEST P2P [Sun, 05 Jan 2020] for many tags this might be to long, if you make a single tag ebook this might be super fun!
 
-**TITLE_WITH_DATE** (True or False) True will give you something like `Pocket [Wed, 13 May 2020]`; False `Pocket`
 """
 # CONFIGURATION ###########################################################
 TAGS = [] # [] or ['tag1', 'tag2']
@@ -31,10 +30,7 @@ OLDEST_ARTICLE = 7
 SORT_METHOD = 'newest'
 TO_PULL = 'unread'
 TITLE_WITH_TAGS = False
-TITLE_WITH_DATE = False
 #############################################################################
-
-
 
 
 
@@ -141,6 +137,8 @@ class Pocket(BasicNewsRecipe):
     series_name = 'Pocket'
     sort_method = SORT_METHOD
     to_pull = TO_PULL
+    title = "Pocket"
+    # timefmt = '' # uncomment to remove date from the filenames, if commented then you will get something like `Pocket [Wed, 13 May 2020]`
     masthead_url = "https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/raw/master/doc/masthead.png"
     # --------------------------------------------------------------------------
     
@@ -418,23 +416,15 @@ class Pocket(BasicNewsRecipe):
         Create a generic cover for recipes that don't have a cover
         This override adds time to the cover
         """
-        try:
-            from calibre.ebooks import calibre_cover
-            title = self.title if isinstance(self.title, unicode) else \
-                self.title.decode('utf-8', 'replace')
+        from calibre.ebooks import calibre_cover
+        title = self.title if isinstance(self.title, unicode) else \
+            self.title.decode('utf-8', 'replace')
 
-            if self.tagsList and self.tags_title:
-                title = 'Pocket:' + ' '.join(self.tags).upper()
-            else:
-                title = 'Pocket'
-
-            date = strftime(self.timefmt)
-            time = strftime('%I:%M %p')
-            img_data = calibre_cover(title, date, time)
-            cover_file.write(img_data)
-            cover_file.flush()
-        except:
-            self.log.exception('Failed to generate default cover')
-            return False
+        # print('>> title', title, file=sys.stderr)
+        date = strftime(self.timefmt)
+        time = strftime('%a %d %b %Y %-H:%M')
+        img_data = calibre_cover(title, date, time)
+        cover_file.write(img_data)
+        cover_file.flush()
         return True
         
