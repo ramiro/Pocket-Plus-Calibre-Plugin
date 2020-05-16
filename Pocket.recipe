@@ -457,3 +457,4 @@ class Pocket(BasicNewsRecipe):
         except:
             self.log.exception('Failed to generate default cover')
             return False
+        return True
