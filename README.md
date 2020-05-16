@@ -40,7 +40,7 @@ Now, you get **The latest** and **The content organized by your tags**:
 
 This is a fork of the original 2011 Calibre ReadItLater plugin.
 
-# Workflow
+# Workflows
 (some potential workflow that @mmagnus is using at the moment)
 
 **MY CURRENT WORKFLOW**
@@ -61,6 +61,20 @@ ARCHIVE_DOWNLOADED = True
 MAX_ARTICLES_PER_FEED = 100
 SORT_METHOD  = 'newest'
 TO_PULL = 'all'
+```
+
+**ANOTHER WORKFLOW**
+
+The new AUTOTAGS feature has the ability to automatically generate the ebook without explicitly specifying the tags in the recipe. However, in my workflow there are certain articles that I save to Pocket but are not meant to be read in Kindle. They might have a lot of links, or are involved in software development and I want to read them as I code, or any other reason. In that context, the variable TAGS_EXCEPTIONS is very useful. I can use a tag like "nokindle" and guarantee that these articles won't be downloaded (and archived):
+
+```python
+# [1]
+TAGS = []
+TAGS_EXCEPTIONS = ['nokindle']
+ARCHIVE_DOWNLOADED = True
+MAX_ARTICLES_PER_FEED = 100
+SORT_METHOD  = 'newest'
+TO_PULL = 'unread' 
 ```
 
 **AUTOMATED [no Calibre]**
@@ -132,10 +146,10 @@ Links on development of recipes:
 * https://manual.calibre-ebook.com/news.html
 * https://manual.calibre-ebook.com/news_recipe.html
 * https://manual.calibre-ebook.com/creating_plugins.html#more-plugin-examples
-* https://manual.calibre-ebook.com/news.html#tips-for-developing-new-recipes
 
 The default Calibre plugin is here https://github.com/kovidgoyal/calibre/blob/master/recipes/readitlater.recipe
 
     calibre-debug --paths --gui-debug ~/Desktop/calibre.txt
 
-    ebook-convert Pocket.recipe .epub --test -vv --debug-pipeline debug && open Pocket.epub
+# ToDo
+* Properly document how to automate this recipe with ebook-convert and calibre-smtp
