@@ -35,7 +35,7 @@ considered as TAG, so for each TAG you this value will be applied.
 """
 # CONFIGURATION ###########################################################
 TAGS = [] # [] or ['tag1', 'tag2']
-TAGS_EXCEPTIONS = []
+TAGS_EXCEPTIONS = [] # [] or ['tag3', 'tag4']
 INCLUDE_UNTAGGED = True
 ARCHIVE_DOWNLOADED = True
 MAX_ARTICLES_PER_FEED = 30 
@@ -145,7 +145,7 @@ class Pocket(BasicNewsRecipe):
     category = 'info, custom, Pocket'
 
     # User-configurable settings -----------------------------------------------
-    tags = TAGS 
+    tagsList = TAGS 
     oldest_article = OLDEST_ARTICLE
     max_articles_per_feed = MAX_ARTICLES_PER_FEED
     archive_downloaded = ARCHIVE_DOWNLOADED
@@ -170,9 +170,9 @@ class Pocket(BasicNewsRecipe):
 
     # TITLE_WITH_TAGS
     tags_title = ' '
-    if tags:
-        if tags[-1] != '' and TITLE_WITH_TAGS:  # ugly hack
-            tags_title = ':' + ' '.join(tags).upper() + ' '
+    if tagsList:
+        if tagsList[-1] != '' and TITLE_WITH_TAGS:  # ugly hack
+            tags_title = ':' + ' '.join(tagsList).upper() + ' '
 
     # TITLE_WITH_DATE    
     if TITLE_WITH_DATE:
@@ -239,7 +239,7 @@ class Pocket(BasicNewsRecipe):
         articles_to_ignore = [] #articles that should be ignored because they are tagged with a tag in TAGS_EXCEPTIONS
 
         ############ GET TAGS ###################
-        if self.tags:
+        if self.tagsList:
             pass  # so if you have any tags, skip this
         else:
             request = mechanize.Request("https://getpocket.com/v3/get",
@@ -276,21 +276,21 @@ class Pocket(BasicNewsRecipe):
             if not response['list']:
                 self.abort_recipe_processing('No unread articles in the Pocket account "{}"'.format(self.config.user))
             else:
-                self.tags = []
+                self.tagsList = []
                 for item in response['list']:
                     try:
-                        tag = response['list'][item]['tags'].keys()[0]
+                        tagItem = response['list'][item]['tags'].keys()[0]
                     except KeyError:
                         continue
-                    if tag not in self.tags:
-                        self.tags.append(tag)             
-            sorted(self.tags, key=unicode.lower)
+                    if tagItem not in self.tagsList:
+                        self.tagsList.append(tagItem)             
+            sorted(self.tagsList, key=unicode.lower)
 
         if self.include_untagged:
-            self.tags.append('') # ugly hack
+            self.tagsList.append('') # ugly hack
 
         ###### PROCESS ########
-        for tag in self.tags:
+        for tagItem in self.tagsList:
             request = mechanize.Request("https://getpocket.com/v3/get",
                     (u'{{'
                         '"consumer_key":"{0}",'
@@ -307,7 +307,7 @@ class Pocket(BasicNewsRecipe):
                         self.max_articles_per_feed,
                         int(time()) - 86400 * self.oldest_article,
                         self.sort_method, 
-                        tag,
+                        tagItem,
                         self.to_pull,
                     ),
                     headers = {
@@ -331,7 +331,7 @@ class Pocket(BasicNewsRecipe):
 
             if self.archive_downloaded and response['list']:
                 #Only archive items NOT in excluded tags.
-                if tag not in TAGS_EXCEPTIONS:
+                if tagItem not in TAGS_EXCEPTIONS:
                     for item in response['list'].values():
                         # Avoid duplicates as an article can appear in a tag and in the 'Untagged' section
                         if (item['item_id'] not in articles_to_ignore and item['item_id'] not in self.to_archive):
@@ -345,7 +345,7 @@ class Pocket(BasicNewsRecipe):
 
                     # If the tag is excluded, store the item_id so we can test against the list
                     # when processing the empty tag, which includes all the articles
-                    if tag in TAGS_EXCEPTIONS:
+                    if tagItem in TAGS_EXCEPTIONS:
                         articles_to_ignore.append(item['item_id'])
 
 
@@ -363,12 +363,12 @@ class Pocket(BasicNewsRecipe):
 
                         pass
                     
-                if not tag:
-                    tag = "Untagged"
+                if not tagItem:
+                    tagItem = "Untagged"
 
                 if arts: # if no arts, then don't create an empty entry with the tag only!
-                    if tag not in TAGS_EXCEPTIONS: #Only include tags NOT excluded
-                        articles.append((tag, arts))
+                    if tagItem not in TAGS_EXCEPTIONS: #Only include tags NOT excluded
+                        articles.append((tagItem, arts))
 
         if not articles:
             self.abort_recipe_processing('No articles in the Pocket account %s to download' % (self.config.user)) #, ' '.join(self.tags))) \n[tags: %s]
