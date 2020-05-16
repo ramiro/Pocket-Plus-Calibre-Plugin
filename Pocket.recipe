@@ -150,6 +150,7 @@ class Pocket(BasicNewsRecipe):
     sort_method = SORT_METHOD
     to_pull = TO_PULL
 
+    publication_type = 'magazine'
     title = "Pocket"
     # timefmt = '' # uncomment to remove date from the filenames, if commented then you will get something like `Pocket [Wed, 13 May 2020]`
     masthead_url = "https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/raw/master/doc/masthead.png"
