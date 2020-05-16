@@ -3,9 +3,19 @@
 from __future__ import print_function
 __version__ = '2.4.1'
 """
-**TAGS** (list of strings or empty list: []) if [] (empty list) then the plugin will connect Pocket and fetch articles based on the configuration of the plugin. Next, the plugin will get tags of these articles and group them into sections in the final ebook. If TAGS has elements, e.g., TAGS = ['tag1', 'tag2'] then only these tags will be fetched from Pocket.
+**TAGS** (list of strings or empty list: []) if [] (empty list) then the plugin will connect Pocket and fetch articles based on the configuration of the plugin.
+    Next, the plugin will get tags of these articles and group them into sections in the final ebook.
+    If TAGS has elements, e.g., TAGS = ['tag1', 'tag2'] then only these tags will be fetched from Pocket.
 
-**INCLUDE_UNTAGGED** (True or False) if True then put all fetched and untagged articles in the last section 'Untagged'. If False then skip these articles and don't create the section 'Untagged'.
+**TAGS_EXCEPTIONS** (list of strings or empty list: []) if [] (empty list) then the plugin will ignore it.
+    If TAGS_EXCEPTIONS has elements, e.g., TAGS_EXCEPTIONS = ['tag3', 'tag4'] then the articles tagged with this tags will be ignored.
+    That is, tag3 and tag4 won't appear as sections, and it's articles won't appear in the  "Untagged" section.
+    This variable is meant to be used with TAGS = [], as it doesn’t make any sense to specify a tag both in TAGS and in TAGS_EXCEPTIONS.
+
+**INCLUDE_UNTAGGED** (True or False) if True then put all fetched and untagged articles in the last section 'Untagged'.
+    If False then skip these articles and don't create the section 'Untagged'. Bear in mind that if TAGS is populated ( e.g. TAGS = ['tag1', 'tag2']),
+    INCLUDE_UNTAGED = True and other tags exist in Pokcet (e.g. tag3,tag4) then the Untagged section will include untagged articles 
+    in Pocket AND articles tagged with tag3 and tag4. That behavior can be avoided using TAGS_EXCEPTION
 
 **ARCHIVE_DOWNLOADED** (True or False) do you want to archive articles after fetching 
 
@@ -18,16 +28,18 @@ considered as TAG, so for each TAG you this value will be applied.
  
 **TO_PULL** ('all' or 'unread') What articles to pull? unread only or all?
 
-**TITLE_WITH_TAGS** (True or False) if True will the ebook filename will be like Pocket: INVEST P2P [Sun, 05 Jan 2020] for many tags this might be to long, if you make a single tag ebook this might be super fun!
+**TITLE_WITH_TAGS** (True or False) if True will the ebook filename will be like
+    Pocket: INVEST P2P [Sun, 05 Jan 2020] for many tags this might be to long, if you make a single tag ebook this might be super fun!
 
 **TITLE_WITH_DATE** (True or False) True will give you something like `Pocket [Wed, 13 May 2020]`; False `Pocket`
 """
 # CONFIGURATION ###########################################################
 TAGS = [] # [] or ['tag1', 'tag2']
+TAGS_EXCEPTIONS = []
 INCLUDE_UNTAGGED = True
 ARCHIVE_DOWNLOADED = True
 MAX_ARTICLES_PER_FEED = 30 
-OLDEST_ARTICLE = 7
+OLDEST_ARTICLE = 1000
 SORT_METHOD = 'newest'
 TO_PULL = 'unread'
 TITLE_WITH_TAGS = False
@@ -133,7 +145,7 @@ class Pocket(BasicNewsRecipe):
     category = 'info, custom, Pocket'
 
     # User-configurable settings -----------------------------------------------
-    tagsList = TAGS 
+    tags = TAGS 
     oldest_article = OLDEST_ARTICLE
     max_articles_per_feed = MAX_ARTICLES_PER_FEED
     archive_downloaded = ARCHIVE_DOWNLOADED
@@ -145,26 +157,22 @@ class Pocket(BasicNewsRecipe):
     # --------------------------------------------------------------------------
     
     # Inherited developer settings
-    """ "auto_cleanup" is usually great at picking out the relevant content from a variety of websites, so you do not need to manually clean up each website. As a result you can use feeds from different websites even if the articles have very different structures. Sometimes however, "auto_cleanup" can be over zealous and remove content that is indeed relevant like a picture. To fix this you need to understand a little bit of HTML. You need to use "firebug" in firefox or a similar tool to find out the tags corresponding to the part that you would like to remain. <http://blog.calibre-ebook.com/2011/10/custom-news-fetching.html>"""
-    # great source of info <https://github.com/kovidgoyal/calibre/blob/master/src/calibre/web/feeds/news.py>
-    auto_cleanup = True  # The "auto_cleanup" uses statistical analysis to extract the useful content in the news website or blog.
-    no_stylesheets = True  # remove css from the original site
-    use_embedded_content = False # 
-    ignore_duplicate_articles = {'url'} # can be also 'title'
-    
+    auto_cleanup = True
+    no_stylesheets = True
+    use_embedded_content = False
+    ignore_duplicate_articles = {'url'}
+
     # Custom developer settings
     consumer_key = '87006-2ecad30a91903f54baf0ee05'
     redirect_uri = 'https://calibre-ebook.com/'
     base_url = 'https://app.getpocket.com'
     to_archive = []
 
-    publication_type = 'Magazine'
-    
     # TITLE_WITH_TAGS
     tags_title = ' '
-    if tagsList:
-        if tagsList[-1] != '' and TITLE_WITH_TAGS:  # ugly hack
-            tags_title = ':' + ' '.join(tagsList).upper() + ' '
+    if tags:
+        if tags[-1] != '' and TITLE_WITH_TAGS:  # ugly hack
+            tags_title = ':' + ' '.join(tags).upper() + ' '
 
     # TITLE_WITH_DATE    
     if TITLE_WITH_DATE:
@@ -228,9 +236,10 @@ class Pocket(BasicNewsRecipe):
         assert self.config.token, "No access token"
 
         articles = []
+        articles_to_ignore = [] #articles that should be ignored because they are tagged with a tag in TAGS_EXCEPTIONS
 
         ############ GET TAGS ###################
-        if self.tagsList:
+        if self.tags:
             pass  # so if you have any tags, skip this
         else:
             request = mechanize.Request("https://getpocket.com/v3/get",
@@ -267,21 +276,21 @@ class Pocket(BasicNewsRecipe):
             if not response['list']:
                 self.abort_recipe_processing('No unread articles in the Pocket account "{}"'.format(self.config.user))
             else:
-                self.tagsList = []
+                self.tags = []
                 for item in response['list']:
                     try:
-                        tagItem = response['list'][item]['tags'].keys()[0]
+                        tag = response['list'][item]['tags'].keys()[0]
                     except KeyError:
                         continue
-                    if tagItem not in self.tagsList:
-                        self.tagsList.append(tagItem)      
-            sorted(self.tagsList, key=unicode.lower)
+                    if tag not in self.tags:
+                        self.tags.append(tag)             
+            sorted(self.tags, key=unicode.lower)
 
         if self.include_untagged:
-            self.tagsList.append('') # ugly hack
+            self.tags.append('') # ugly hack
 
         ###### PROCESS ########
-        for tagItem in self.tagsList:
+        for tag in self.tags:
             request = mechanize.Request("https://getpocket.com/v3/get",
                     (u'{{'
                         '"consumer_key":"{0}",'
@@ -297,8 +306,8 @@ class Pocket(BasicNewsRecipe):
                         self.config.token,
                         self.max_articles_per_feed,
                         int(time()) - 86400 * self.oldest_article,
-                        self.sort_method,
-                        tagItem,
+                        self.sort_method, 
+                        tag,
                         self.to_pull,
                     ),
                     headers = {
@@ -321,29 +330,45 @@ class Pocket(BasicNewsRecipe):
                 continue
 
             if self.archive_downloaded and response['list']:
-                self.to_archive = [item['item_id'] for item in response['list'].values()]
+                #Only archive items NOT in excluded tags.
+                if tag not in TAGS_EXCEPTIONS:
+                    for item in response['list'].values():
+                        # Avoid duplicates as an article can appear in a tag and in the 'Untagged' section
+                        if (item['item_id'] not in articles_to_ignore and item['item_id'] not in self.to_archive):
+                            self.to_archive.append(item['item_id'])
 
             if not response['list']:
                 pass
             else:
                 arts = []
                 for item in response['list'].values(): # .values() sorted(response['list'].values(), key = lambda x: x['sort_id'])
+
+                    # If the tag is excluded, store the item_id so we can test against the list
+                    # when processing the empty tag, which includes all the articles
+                    if tag in TAGS_EXCEPTIONS:
+                        articles_to_ignore.append(item['item_id'])
+
+
                     try: # KeyError: u'resolved_title' error fix?
-                        arts.append({
+                        if item['item_id'] not in articles_to_ignore:
+                            arts.append({
                             'title': item['resolved_title'],
                             'url': item['resolved_url'],
                             'date': item['time_added'],
                             'description': item['excerpt'],})
+
                     except KeyError:
+
                         print(response['list'], file=sys.stderr)
 
                         pass
                     
-                if not tagItem:
-                    tagItem = "Untagged"
+                if not tag:
+                    tag = "Untagged"
 
                 if arts: # if no arts, then don't create an empty entry with the tag only!
-                    articles.append((tagItem, arts))
+                    if tag not in TAGS_EXCEPTIONS: #Only include tags NOT excluded
+                        articles.append((tag, arts))
 
         if not articles:
             self.abort_recipe_processing('No articles in the Pocket account %s to download' % (self.config.user)) #, ' '.join(self.tags))) \n[tags: %s]
@@ -423,7 +448,7 @@ class Pocket(BasicNewsRecipe):
             title = self.title if isinstance(self.title, unicode) else \
                 self.title.decode('utf-8', 'replace')
 
-            if self.tagsList and self.tags_title:
+            if self.tags and self.title_with_tags:
                 title = 'Pocket:' + ' '.join(self.tags).upper()
             else:
                 title = 'Pocket'
