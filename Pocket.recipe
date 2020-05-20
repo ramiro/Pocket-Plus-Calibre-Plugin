@@ -172,6 +172,8 @@ class Pocket(BasicNewsRecipe):
 
     simultaneous_downloads = 10
     
+    extra_css = '.touchscreen_navbar {display: none;}'
+    extra_css = '.calibre_navbar { visibility: hidden; }'
     # TITLE_WITH_TAGS
     tags_title = ' '
     if tagsList:
