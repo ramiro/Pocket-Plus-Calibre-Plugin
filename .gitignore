@@ -1,2 +1,5 @@
 test*
 bucket/
+*.mobi
+*.epub
+mobi/
