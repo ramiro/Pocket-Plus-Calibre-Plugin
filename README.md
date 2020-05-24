@@ -37,6 +37,7 @@ I modified the plugin to get an e-book including:
 Now, you get **The latest** and **The content organized by your tags**:
 
 <table><tr><td><img src="doc/02.png" alt="" style="width: 200px;"/></td><td><img src="doc/03.png" alt="" style="width: 200px;"/></td></tr></table>
+<table><tr><td><img src="doc/04.jpg" alt="" style="width: 200px;"/></td><td><img src="doc/05.jpg" alt="" style="width: 200px;"/></td></tr></table>
 
 This is a fork of the original 2011 Calibre ReadItLater plugin.
 
