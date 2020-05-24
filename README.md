@@ -23,21 +23,20 @@ Table of contents:
 
 [Calibre](http://calibre-ebook.com/) is a free and open source e-book library management application developed by users of e-books for users of e-books. The programs also allows users to create own e-books and syncing with a variaty of e-book readers (e.g. Kindle, that's how I got the screenshots below) [Source](https://en.wikipedia.org/wiki/Calibre_%28software%29). Calibre has a plugin management system and ..
 
-Follow the discussion at https://www.mobileread.com/forums/showthread.php?t=270602
+Follow the discussion at <https://www.mobileread.com/forums/showthread.php?t=270602>
 
-If you have no idea where to start, take a look here https://www.howtogeek.com/115178/how-to-convert-news-feeds-to-ebooks-with-calibre/ this is an explantion how to use Calibre to send news to your Kindle.
+If you have no idea where to start, take a look here <https://www.howtogeek.com/115178/how-to-convert-news-feeds-to-ebooks-with-calibre> this is an explantion how to use Calibre to send news to your Kindle.
 
 This is a fork of the original plugin and a merge of a fix by [@dlo9](https://github.com/dlo9).
 
 I modified the plugin to get an e-book including:
 
-* The latest (more or less as the original version of the plugin)
-* your content organized by tags!
+* the Untagged (more or less as the original version of the plugin)
+* your content organized by Pocket tags!
 
-Now, you get **The latest** and **The content organized by your tags**:
+Now, you get **Untagged** and **The Sections created based on you Pocket tags**:
 
-<table><tr><td><img src="doc/02.png" alt="" style="width: 200px;"/></td><td><img src="doc/03.png" alt="" style="width: 200px;"/></td></tr></table>
-<table><tr><td><img src="doc/04.jpg" alt="" style="width: 200px;"/></td><td><img src="doc/05.jpg" alt="" style="width: 200px;"/></td></tr></table>
+<table><tr><td><img src="doc/06.jpg" alt="" ></td><td><img src="doc/04.jpg" alt="" /></td><td><img src="doc/05.jpg" alt="" ></td></tr></table>
 
 This is a fork of the original 2011 Calibre ReadItLater plugin.
 
