@@ -27,7 +27,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
     path = args.path + '/*'
     if len(glob.glob(path)):
+        os.system("osascript -e 'display notification \"Push Pocket\" with title \"Pocket+\"'")
         os.system('source ' + args.script)
     if not args.dev:
+        # fetch file list again to remove all files there
         for f in glob.glob(path):
             os.remove(f)
