@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim:ft=python tabstop=8 expandtab shiftwidth=4 softtabstop=4
 from __future__ import print_function
-__version__ = '2.5.2'
+__version__ = '2.6.0'
 """
 **TAGS** (list of strings or empty list: []) if [] (empty list) then the plugin will connect Pocket and fetch articles based on the configuration of the plugin.
     Next, the plugin will get tags of these articles and group them into sections in the final ebook.
@@ -40,6 +40,7 @@ ARCHIVE_DOWNLOADED = True
 MAX_ARTICLES_PER_FEED = 30 
 OLDEST_ARTICLE = 7
 SORT_METHOD = 'newest'
+SORT_WITHIN_TAG_BY_TITLE = True
 TO_PULL = 'unread'
 TITLE_WITH_TAGS = False
 #############################################################################
@@ -365,6 +366,9 @@ class Pocket(BasicNewsRecipe):
                         print(response['list'], file=sys.stderr)
 
                         pass
+
+                if SORT_WITHIN_TAG_BY_TITLE:
+                    arts = sorted(arts, key = lambda i: i['title']) 
                     
                 if not tagItem:
                     tagItem = "Untagged"
