@@ -1,5 +1,7 @@
 #!/bin/zsh
 
+source ~/.zshrc
+
 every=5
 N=$((60/$every))
 
