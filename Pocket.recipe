@@ -286,7 +286,7 @@ class Pocket(BasicNewsRecipe):
                 self.tagsList = []
                 for item in response['list']:
                     try:
-                        tagItem = response['list'][item]['tags'].keys()[0]
+                        tagItem = list(response['list'][item]['tags'].keys())[0]
                     except KeyError:
                         continue
                     if tagItem not in self.tagsList:
