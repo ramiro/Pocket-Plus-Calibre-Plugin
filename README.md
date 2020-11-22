@@ -122,6 +122,7 @@ Report any issues here: https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/is
 
 # Changelog
 
+* 201122 [v2.6.3] With fix from @AkashPatel95 #26
 * 200515 [v2.4.0] Auto tags! Automatically group articles into Sections based on Pocket's tags.
 * 200514 [v2.3.x] Redesigned tags system, attempt to fix `sort_id` problem, move OLDEST_ARTICLE to the top
 * 200104 Incorporate code from David Orchard (@dlo9, https://github.com/dlo9/calibre-recipes) to fix an issue with Pocket Authentication API
