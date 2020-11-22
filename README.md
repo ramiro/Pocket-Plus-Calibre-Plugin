@@ -109,7 +109,7 @@ The default Calibre plugin is here https://github.com/kovidgoyal/calibre/blob/ma
 * Properly document how to automate this recipe with ebook-convert and calibre-smtp
 
 
-# Workflows
+# Workflow
 (some potential workflow that @mmagnus is using at the moment)
 
 **MY CURRENT WORKFLOW**
