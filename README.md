@@ -14,13 +14,13 @@ Pocket+ recipe for Calibre
 
 Table of contents:
 
-  * [Workflow](#workflow)
   * [Settings](#settings)
   * [Installation](#installation)
   * [Changelog](#changelog)
   * [Tips](#tips)
   * [Development](#development)
-
+  * [Workflow](#workflow)
+  
 [Pocket](https://getpocket.com/), previously known as Read It Later, is an application and service for managing a reading list of articles from the Internet. The application allows the user to save an article or web page to the cloud for later reading. The article is then sent to the user's Pocket list (synced to all of their devices) for offline reading. Pocket removes clutter from articles and allows the user to adjust text settings for easier reading [Source](https://en.wikipedia.org/wiki/Pocket_%28application%29).
 
 [Calibre](http://calibre-ebook.com/) is a free and open source e-book library management application developed by users of e-books for users of e-books. The programs also allows users to create own e-books and syncing with a variaty of e-book readers (e.g. Kindle, that's how I got the screenshots below) [Source](https://en.wikipedia.org/wiki/Calibre_%28software%29). Calibre has a plugin management system and ..
@@ -41,55 +41,6 @@ Now, you get **Untagged** and **The Sections created based on you Pocket tags**:
 <table><tr><td><img src="doc/06.jpg" alt="" ></td><td><img src="doc/04.jpg" alt="" /></td><td><img src="doc/05.jpg" alt="" ></td></tr></table>
 
 This is a fork of the original 2011 Calibre ReadItLater plugin.
-
-# Workflows
-(some potential workflow that @mmagnus is using at the moment)
-
-**MY CURRENT WORKFLOW**
-
-I often (each day or every second day) send new things [1] from my Pocket to my Kindle. When I research some particular topic I use tags to fetch only articles related to the given topic, e.g., “python testing”, and then I have a nice book only on that topic. For each of this type of books you can just copy paste this plugin and change the variables at the top of the file to have a few lines of action in your workflow.
-
-```python
-# [1]
-TAGS = [] 
-ARCHIVE_DOWNLOADED = True
-MAX_ARTICLES_PER_FEED = 100
-SORT_METHOD  = 'newest'
-TO_PULL = 'unread' 
-	
-# [2]
-TAGS = ['python testing']
-ARCHIVE_DOWNLOADED = True
-MAX_ARTICLES_PER_FEED = 100
-SORT_METHOD  = 'newest'
-TO_PULL = 'all'
-```
-
-**ANOTHER WORKFLOW**
-
-The new AUTOTAGS feature has the ability to automatically generate the ebook without explicitly specifying the tags in the recipe. However, in my workflow there are certain articles that I save to Pocket but are not meant to be read in Kindle. They might have a lot of links, or are involved in software development and I want to read them as I code, or any other reason. In that context, the variable TAGS_EXCEPTIONS is very useful. I can use a tag like "nokindle" and guarantee that these articles won't be downloaded (and archived):
-
-```python
-# [1]
-TAGS = []
-TAGS_EXCEPTIONS = ['nokindle']
-ARCHIVE_DOWNLOADED = True
-MAX_ARTICLES_PER_FEED = 100
-SORT_METHOD  = 'newest'
-TO_PULL = 'unread' 
-```
-
-**AUTOMATED [no Calibre]**
-
-One thing, this plugin needs that the Calibre is open and running. If you want someone else to send your articles for you, you can use these services. This is pretty cool because you don't have to have access to your computer. Both services were tested by me and I can recommended them! At the moment I prefer to be in 100% control of what and when is sent to my Kindle so I use only the plugin from this repo.
-
-https://p2k.co https://www.crofflr.com/#/home 
-
-**PUSH TO KINDLE NOW AS ONE FILE**
-
-Sometimes I want to read something NOW or as a single e-book and I don't want to go through Calibre, then I use these plugins to push an article directly to Kindle. 
-
-https://www.fivefilters.org/push-to-kindle/ (for Safari, Chrome, Firefox) https://www.amazon.com/gp/sendtokindle/chrome (for Chrome)
 
 # Settings
 
@@ -156,3 +107,53 @@ The default Calibre plugin is here https://github.com/kovidgoyal/calibre/blob/ma
 
 # ToDo
 * Properly document how to automate this recipe with ebook-convert and calibre-smtp
+
+
+# Workflows
+(some potential workflow that @mmagnus is using at the moment)
+
+**MY CURRENT WORKFLOW**
+
+I often (each day or every second day) send new things [1] from my Pocket to my Kindle. When I research some particular topic I use tags to fetch only articles related to the given topic, e.g., “python testing”, and then I have a nice book only on that topic. For each of this type of books you can just copy paste this plugin and change the variables at the top of the file to have a few lines of action in your workflow.
+
+```python
+# [1]
+TAGS = [] 
+ARCHIVE_DOWNLOADED = True
+MAX_ARTICLES_PER_FEED = 100
+SORT_METHOD  = 'newest'
+TO_PULL = 'unread' 
+	
+# [2]
+TAGS = ['python testing']
+ARCHIVE_DOWNLOADED = True
+MAX_ARTICLES_PER_FEED = 100
+SORT_METHOD  = 'newest'
+TO_PULL = 'all'
+```
+
+**ANOTHER WORKFLOW**
+
+The new AUTOTAGS feature has the ability to automatically generate the ebook without explicitly specifying the tags in the recipe. However, in my workflow there are certain articles that I save to Pocket but are not meant to be read in Kindle. They might have a lot of links, or are involved in software development and I want to read them as I code, or any other reason. In that context, the variable TAGS_EXCEPTIONS is very useful. I can use a tag like "nokindle" and guarantee that these articles won't be downloaded (and archived):
+
+```python
+# [1]
+TAGS = []
+TAGS_EXCEPTIONS = ['nokindle']
+ARCHIVE_DOWNLOADED = True
+MAX_ARTICLES_PER_FEED = 100
+SORT_METHOD  = 'newest'
+TO_PULL = 'unread' 
+```
+
+**AUTOMATED [no Calibre]**
+
+One thing, this plugin needs that the Calibre is open and running. If you want someone else to send your articles for you, you can use these services. This is pretty cool because you don't have to have access to your computer. Both services were tested by me and I can recommended them! At the moment I prefer to be in 100% control of what and when is sent to my Kindle so I use only the plugin from this repo.
+
+https://p2k.co https://www.crofflr.com/#/home 
+
+**PUSH TO KINDLE NOW AS ONE FILE**
+
+Sometimes I want to read something NOW or as a single e-book and I don't want to go through Calibre, then I use these plugins to push an article directly to Kindle. 
+
+https://www.fivefilters.org/push-to-kindle/ (for Safari, Chrome, Firefox) https://www.amazon.com/gp/sendtokindle/chrome (for Chrome)
