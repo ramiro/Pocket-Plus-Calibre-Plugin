@@ -54,7 +54,7 @@ This is a fork of the original 2011 Calibre ReadItLater plugin.
 If you want to use the sections by domain functionality, you have to
 
 * active the SECTIONS_BY_DOMAIN flag
-* uncomment the tld import. For more details, check 
+* uncomment the tld import. For more details, check https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/pull/31 
 
 # Settings
 
