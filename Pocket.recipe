@@ -43,7 +43,7 @@ considered as TAG, so for each TAG you this value will be applied.
 # CONFIGURATION ###########################################################
 TAGS = [] # [] or ['tag1', 'tag2']
 TAGS_EXCEPTIONS = [] # [] or ['tag3', 'tag4']
-SECTIONS_BY_DOMAIN = True
+SECTIONS_BY_DOMAIN = False
 INCLUDE_UNTAGGED = True
 ARCHIVE_DOWNLOADED = False
 MAX_ARTICLES_PER_FEED = 3000 
@@ -353,11 +353,10 @@ class Pocket(BasicNewsRecipe):
 					try: # KeyError: u'resolved_title' error fix?				
 
 						if SECTIONS_BY_DOMAIN:
+							# Extract domain from the URL
 							domain_tag = get_fld(item['resolved_url'])
-							#self.log.exception('title: ' + item['resolved_title'])
-							#self.log.exception('url: ' + item['resolved_url'])
-							#self.log.exception('domain: ' + domain_tag)
 							
+							# Add the article under its domain
 							if domain_tag not in domain_dict:
 								domain_dict[domain_tag] = [item]
 							else:
@@ -389,7 +388,7 @@ class Pocket(BasicNewsRecipe):
 	
 		# this (ugly) line is needed because the recipe ignores duplicates
 		# articles. Therefore, as every article is present in a domain an in a
-		# tag (or untagged), they woouldn't show up under it's domain
+		# pocket tag (or the untagged fake tag), they wouldn't show up under its domain
 		# therefore, currently you can have articles under pocket tags or
 		# under domains, but not both
 		articles = []
