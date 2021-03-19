@@ -43,11 +43,11 @@ TAGS = [] # [] or ['tag1', 'tag2']
 TAGS_EXCEPTIONS = [] # [] or ['tag3', 'tag4']
 TAGS_BY_DOMAIN = True
 INCLUDE_UNTAGGED = True
-ARCHIVE_DOWNLOADED = True
-MAX_ARTICLES_PER_FEED = 30 
-OLDEST_ARTICLE = 7
+ARCHIVE_DOWNLOADED = False
+MAX_ARTICLES_PER_FEED = 3000 
+OLDEST_ARTICLE = 365
 SORT_METHOD = 'newest'
-SORT_WITHIN_TAG_BY_TITLE = True
+SORT_WITHIN_TAG_BY_TITLE = False
 TO_PULL = 'unread'
 TITLE_WITH_TAGS = False
 #############################################################################
@@ -75,6 +75,8 @@ from collections import namedtuple
 from os import path
 from time import localtime, strftime, time
 import sys
+from tld import get_fld
+
 
 import errno
 import json
@@ -245,6 +247,7 @@ class Pocket(BasicNewsRecipe):
 
         articles = []
         articles_to_ignore = [] #articles that should be ignored because they are tagged with a tag in TAGS_EXCEPTIONS
+        domainTagMap = {} #dictionary for each domainTag and it's articles (TAGS_BY_DOMAINm,)
 
         ############ GET TAGS ###################
         # ugly implementation because this is just a copy what happens next
@@ -295,6 +298,11 @@ class Pocket(BasicNewsRecipe):
                         continue
                     if tagItem not in self.tagsList:
                         self.tagsList.append(tagItem)
+
+                    #TAGS_BY_DOMAIN
+                    if TAGS_BY_DOMAIN:
+                   		#get_fld(response['list'][item]['resolved_url'])
+
                  # Process item to discover domain tags, if TAGS_BY_DOMAIN is selected
                  # use the XX function to obtain the domainTag
                  # check if it exists in the domainTagMap, else add it as a key
