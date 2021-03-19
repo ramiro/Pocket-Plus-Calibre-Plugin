@@ -379,9 +379,9 @@ class Pocket(BasicNewsRecipe):
 							#TAGS_BY_DOMAIN
 							if TAGS_BY_DOMAIN:
 								domain_tag = get_fld(item['resolved_url'])
-								self.log.exception('title: ' + item['resolved_title'])
-								self.log.exception('url: ' + item['resolved_url'])
-								self.log.exception('domain: ' + domain_tag)
+								#self.log.exception('title: ' + item['resolved_title'])
+								#self.log.exception('url: ' + item['resolved_url'])
+								#self.log.exception('domain: ' + domain_tag)
 								
 								if domain_tag not in domain_tag_dict:
 									domain_tag_dict[domain_tag] = [item]
@@ -404,9 +404,14 @@ class Pocket(BasicNewsRecipe):
 					if tagItem not in TAGS_EXCEPTIONS: #Only include tags NOT excluded
 						articles.append((tagItem, arts))
 
-		articles = [] #this should not be needed
-		# Loop the domainTagMap to insert domainTag, domainTagItemsArts into articles
-		#self.log.exception(domain_tag_dict)
+	
+		# this (ugly) line is needed because the recipe ignores duplicates
+		# articles. Therefore, as every article is present in a domain an in a
+		# tag (or untagged), they woouldn't show up under it's domain
+		# therefore, currently you can have articles under pocket tags or
+		# under domains, but not both
+		articles = []
+		
 		for domain in domain_tag_dict:
 			self.log.exception(domain)
 			self.log.exception(len(domain_tag_dict.get(domain)))
@@ -417,11 +422,9 @@ class Pocket(BasicNewsRecipe):
 							'url': item['resolved_url'],
 							'date': item['time_added'],
 							'description': item['excerpt'],})
-			if SORT_WITHIN_TAG_BY_TITLE:
-				arts = sorted(arts, key = lambda i: i['title'])
-
 			if arts:
-				articles.append((domain, arts))		
+				articles.append((domain, arts))
+		
 		if not articles:
 			self.abort_recipe_processing('No articles in the Pocket account %s to download' % (self.config.user)) #, ' '.join(self.tags))) \n[tags: %s]
 		return articles
