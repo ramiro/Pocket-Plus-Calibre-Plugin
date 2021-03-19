@@ -386,25 +386,24 @@ class Pocket(BasicNewsRecipe):
 						articles.append((tagItem, arts))
 
 	
-		# this (ugly) line is needed because the recipe ignores duplicates
-		# articles. Therefore, as every article is present in a domain an in a
-		# pocket tag (or the untagged fake tag), they wouldn't show up under its domain
-		# therefore, currently you can have articles under pocket tags or
-		# under domains, but not both
-		articles = []
+		if SECTIONS_BY_DOMAIN:
+			# this (ugly) line is needed because the recipe ignores duplicates
+			# articles. Therefore, as every article is present in a domain an in a
+			# pocket tag (or the untagged fake tag), they wouldn't show up under its domain
+			# therefore, currently you can have articles under pocket tags or
+			# under domains, but not both
+			articles = []
 
-		for domain in domain_dict:
-			self.log.exception(domain)
-			self.log.exception(len(domain_dict.get(domain)))
-			arts = []
-			for item in domain_dict.get(domain):
-				arts.append({
-							'title': item['resolved_title'],
-							'url': item['resolved_url'],
-							'date': item['time_added'],
-							'description': item['excerpt'],})
-			if arts:
-				articles.append((domain, arts))
+			for domain in domain_dict:
+				arts = []
+				for item in domain_dict.get(domain):
+					arts.append({
+								'title': item['resolved_title'],
+								'url': item['resolved_url'],
+								'date': item['time_added'],
+								'description': item['excerpt'],})
+				if arts:
+					articles.append((domain, arts))
 		
 		if not articles:
 			self.abort_recipe_processing('No articles in the Pocket account %s to download' % (self.config.user)) #, ' '.join(self.tags))) \n[tags: %s]
