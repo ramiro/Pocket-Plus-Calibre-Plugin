@@ -49,6 +49,13 @@ Or sections based on the **domain** of the URL:
 
 This is a fork of the original 2011 Calibre ReadItLater plugin.
 
+# Sections by domain
+
+If you want to use the sections by domain functionality, you have to
+
+* active the SECTIONS_BY_DOMAIN flag
+* uncomment the tld import. For more details, check 
+
 # Settings
 
 To change settings, click on:
@@ -115,6 +122,7 @@ The default Calibre plugin is here https://github.com/kovidgoyal/calibre/blob/ma
 # ToDo
 * Properly document how to automate this recipe with ebook-convert and calibre-smtp
 * Refactor the code that fetch the tags from pocket.
+* lazy load "from tld import fld"
 
 # Workflow
 (some potential workflow that @mmagnus is using at the moment)
