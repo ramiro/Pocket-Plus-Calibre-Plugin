@@ -16,6 +16,8 @@ __version__ = '2.6.3'
     That is, tag3 and tag4 won't appear as sections, and it's articles won't appear in the  "Untagged" section.
     This variable is meant to be used with TAGS = [], as it doesn’t make any sense to specify a tag both in TAGS and in TAGS_EXCEPTIONS.
 
+**TAGS_BY_DOMAIN** ToDo
+
 **INCLUDE_UNTAGGED** (True or False) if True then put all fetched and untagged articles in the last section 'Untagged'.
     If False then skip these articles and don't create the section 'Untagged'. Bear in mind that if TAGS is populated ( e.g. TAGS = ['tag1', 'tag2']),
     INCLUDE_UNTAGED = True and other tags exist in Pokcet (e.g. tag3,tag4) then the Untagged section will include untagged articles 
@@ -39,6 +41,7 @@ considered as TAG, so for each TAG you this value will be applied.
 # CONFIGURATION ###########################################################
 TAGS = [] # [] or ['tag1', 'tag2']
 TAGS_EXCEPTIONS = [] # [] or ['tag3', 'tag4']
+TAGS_BY_DOMAIN = True
 INCLUDE_UNTAGGED = True
 ARCHIVE_DOWNLOADED = True
 MAX_ARTICLES_PER_FEED = 30 
@@ -291,7 +294,11 @@ class Pocket(BasicNewsRecipe):
                     except KeyError:
                         continue
                     if tagItem not in self.tagsList:
-                        self.tagsList.append(tagItem)             
+                        self.tagsList.append(tagItem)
+                 # Process item to discover domain tags, if TAGS_BY_DOMAIN is selected
+                 # use the XX function to obtain the domainTag
+                 # check if it exists in the domainTagMap, else add it as a key
+                 # and eitherway, store the item in the domainTagMap as a value of the key domainTag         
             sorted(self.tagsList, key=unicode.lower)
 
         if self.include_untagged:
@@ -380,6 +387,8 @@ class Pocket(BasicNewsRecipe):
                 if arts: # if no arts, then don't create an empty entry with the tag only!
                     if tagItem not in TAGS_EXCEPTIONS: #Only include tags NOT excluded
                         articles.append((tagItem, arts))
+
+    	# Loop the domainTagMap to insert domainTag, domainTagItemsArts into articles
 
         if not articles:
             self.abort_recipe_processing('No articles in the Pocket account %s to download' % (self.config.user)) #, ' '.join(self.tags))) \n[tags: %s]
