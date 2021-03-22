@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 # vim:ft=python tabstop=8 expandtab shiftwidth=4 softtabstop=4
 from __future__ import print_function
-__version__ = '2.6.3'
+__version__ = '2.6.4'
 
 """
+2.6.4: SECTIONS_BY_DOMAIN, an excellent implementation from @alvaroreig to make sections 
+       by domains (of URLs) 210322
 2.6.3: With fix from @AkashPatel95 #26 201122
 2.6.2: Fix. Add also removal of H1 to clean up all titles, to insert a new one
 
