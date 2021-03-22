@@ -35,12 +35,26 @@ I modified the plugin to get an e-book including:
 
 * the Untagged (more or less as the original version of the plugin)
 * your content organized by Pocket tags!
+* or, alternatively, your articles organized by the first level domain of the URL.
 
 Now, you get **Untagged** and **The Sections created based on you Pocket tags**:
 
 <table><tr><td><img src="doc/06.jpg" alt="" ></td><td><img src="doc/04.jpg" alt="" /></td><td><img src="doc/05.jpg" alt="" ></td></tr></table>
 
+Or sections based on the **domain** of the URL:
+
+<table><tr><td><img src="doc/07.jpg" alt="" ></td></tr></table>
+
+
+
 This is a fork of the original 2011 Calibre ReadItLater plugin.
+
+# Sections by domain
+
+If you want to use the sections by domain functionality, you have to
+
+* active the SECTIONS_BY_DOMAIN flag
+* uncomment the tld import. For more details, check https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/pull/31 
 
 # Settings
 
@@ -107,7 +121,8 @@ The default Calibre plugin is here https://github.com/kovidgoyal/calibre/blob/ma
 
 # ToDo
 * Properly document how to automate this recipe with ebook-convert and calibre-smtp
-
+* Refactor the code that fetch the tags from pocket.
+* lazy load "from tld import fld"
 
 # Workflow
 (some potential workflow that @mmagnus is using at the moment)
