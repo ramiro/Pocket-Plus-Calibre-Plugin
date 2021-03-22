@@ -61,7 +61,10 @@ from collections import namedtuple
 from os import path
 from time import localtime, strftime, time
 import sys
-#from tld import get_fld
+if SECTIONS_BY_DOMAIN:
+    # maybe this is only me? @mmagnus but I need explicit append like this
+    # sys.path.append("/Users/magnus/miniconda2/envs/py37/lib/python3.7/site-packages") 
+    from tld import get_fld
 
 
 import errno
