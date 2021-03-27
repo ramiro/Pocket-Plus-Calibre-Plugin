@@ -239,7 +239,79 @@ class Pocket(BasicNewsRecipe):
                 articles = []
                 articles_to_ignore = [] #articles that should be ignored because they are tagged with a tag in TAGS_EXCEPTIONS
                 domain_dict = {} #dictionary for each domain and its articles (SECTIONS_BY_DOMAIN)
+                section_dict = {} #dictionary with the sections and its articles. the sections
+                                    #cant be domains or tags depending on SECTIONS_BY_DOMAIN
 
+                ############ GET ALL ITEMS #############
+                # get every item and iterate them. Build the section_dict
+                # with tags or domains as keys, depending on SECTIONS_BY_DOMAIN
+                request = mechanize.Request("https://getpocket.com/v3/get",
+                                        (u'{{'
+                                                '"consumer_key":"{0}",'
+                                                '"access_token":"{1}",'
+                                                '"count":"{2}",'
+                                                '"since":"{3}",'
+                                                '"state":"{5}",'
+                                                '"detailType":"complete",'
+                                                '"sort":"{4}"' '}}').format(
+                                                self.consumer_key,
+                                                self.config.token,
+                                                self.max_articles_per_feed * 1000,  # something "unlimited"
+                                                int(time()) - 86400 * self.oldest_article,
+                                                self.sort_method, 
+                                                self.to_pull,
+                                        ),
+                                        headers = {
+                                                'Content-Type': 'application/json; charset=UTF8',
+                                                'X-Accept': 'application/json'
+                                        }
+                                )
+
+                try:
+                    response = self.browser.open(request)
+                    response = json.load(response)
+                except HTTPError as e:
+                    if e.code == 401:
+                        # Calibre access has been removed
+                        self.reauthorize()
+                        raise e
+
+                if not response['list']:
+                    self.abort_recipe_processing('No unread articles in the Pocket account "{}"'.format(self.config.user))
+                else:
+                    self.log.exception('Number of articles:')
+                    self.log.exception(len(response['list']))
+                    for item in response['list']:
+                        if SECTIONS_BY_DOMAIN:
+                            # the keys of section_dict will be domains
+                            
+                            # Extract domain from the URL
+                            domain = get_fld(response['list'][item]['resolved_url'])
+                            
+                            # Add the article under its domain
+                            if domain not in section_dict:
+                                    section_dict[domain] = [item]
+                            else:
+                                    section_dict[domain].append(item)
+                        else:
+                            # the keys of section_dict will be tags
+                            if (len(TAGS) == 0):
+                                #autotags enabled
+                                try:
+                                    tag = list(response['list'][item]['tags'].keys())[0]
+                                except KeyError:
+                                    tag = 'Untagged'
+
+                                if tag not in section_dict:
+                                    section_dict[tag] = [item]
+                                else:
+                                    section_dict[tag].append(item)
+                            else:
+                                # explicit tags
+                                self.abort_recipe_processing('provisional end eplicit tags')
+
+                    self.log.exception(section_dict)
+                    self.abort_recipe_processing('provisional end')
                 ############ GET TAGS ###################
                 # ugly implementation because this is just a copy what happens next
                 # to be refactor at some point
@@ -286,7 +358,8 @@ class Pocket(BasicNewsRecipe):
                                         try:
                                                 tagItem = list(response['list'][item]['tags'].keys())[0]
                                         except KeyError:
-                                                continue
+                                            self.log.exception("tag key error:" + response['list'][item]['resolved_url'])
+                                            continue
                                         if tagItem not in self.tagsList:
                                                 self.tagsList.append(tagItem)
 
