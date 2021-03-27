@@ -321,8 +321,33 @@ class Pocket(BasicNewsRecipe):
                                         else:
                                             section_dict[tag].append(item)
 
-                    self.log.exception(section_dict)
-                    self.abort_recipe_processing('provisional end')
+                    # At this point the section_dict is completed, either with
+                    # domains or with tags
+                    self.log.exception("section_dict")
+                    #self.abort_recipe_processing('provisional end')
+                    for section in section_dict:
+                        arts = []
+                        for item in section_dict.get(section):
+                                arts.append({
+                                            'title': response['list'][item]['resolved_title'],
+                                            'url': response['list'][item]['resolved_url'],
+                                            'date': response['list'][item]['time_added'],
+                                            'description': response['list'][item]['excerpt'],})
+                        if arts:
+                                articles.append((section, arts))
+
+                    if not articles:
+                        self.abort_recipe_processing('No articles in the Pocket account %s to download' % (self.config.user)) #, ' '.join(self.tags))) \n[tags: %s]
+                    return articles
+                    #pending ARCHIVE_DOWNLOADED
+                    #pending
+                    #if SORT_WITHIN_TAG_BY_TITLE:
+                    #                   arts = sorted(arts, key = lambda i: i['title'])
+                    #pending
+                    #if arts: # if no arts, then don't create an empty entry with the tag only!
+                        #if tagItem not in TAGS_EXCEPTIONS: #Only include tags NOT excluded
+                         # articles.append((tagItem, arts))
+
                 ############ GET TAGS ###################
                 # ugly implementation because this is just a copy what happens next
                 # to be refactor at some point
