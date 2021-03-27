@@ -47,7 +47,7 @@ TAGS = [] # [] or ['tag1', 'tag2']
 TAGS_EXCEPTIONS = [] # [] or ['tag3', 'tag4']
 SECTIONS_BY_DOMAIN = False
 INCLUDE_UNTAGGED = True
-ARCHIVE_DOWNLOADED = True
+ARCHIVE_DOWNLOADED = False
 MAX_ARTICLES_PER_FEED = 3000 
 OLDEST_ARTICLE = 365
 SORT_METHOD = 'newest'
@@ -237,8 +237,6 @@ class Pocket(BasicNewsRecipe):
                 assert self.config.token, "No access token"
 
                 articles = []
-                articles_to_ignore = [] #articles that should be ignored because they are tagged with a tag in TAGS_EXCEPTIONS
-                domain_dict = {} #dictionary for each domain and its articles (SECTIONS_BY_DOMAIN)
                 section_dict = {} #dictionary with the sections and its articles. the sections
                                     #cant be domains or tags depending on SECTIONS_BY_DOMAIN
 
@@ -279,8 +277,6 @@ class Pocket(BasicNewsRecipe):
                 if not response['list']:
                     self.abort_recipe_processing('No unread articles in the Pocket account "{}"'.format(self.config.user))
                 else:
-                    self.log.exception('Number of articles:')
-                    self.log.exception(len(response['list']))
                     for item in response['list']:
                         if SECTIONS_BY_DOMAIN:
                             # the keys of section_dict will be domains
@@ -303,7 +299,7 @@ class Pocket(BasicNewsRecipe):
                                 else:
                                     tag = None
 
-                            # tag could be null if article untagged and INCLUDE_UNTAGGED=False
+                            # tag could be None if article untagged and INCLUDE_UNTAGGED=False
                             if tag and tag not in TAGS_EXCEPTIONS:
                                 if (len(TAGS) == 0):
                                     #autotags enabled, insert tag and item
@@ -336,7 +332,6 @@ class Pocket(BasicNewsRecipe):
 
                             if (
                                 self.archive_downloaded 
-                                and response['list'][item]['item_id'] not in articles_to_ignore 
                                 and response['list'][item]['item_id'] not in self.to_archive
                             ):
                                 self.to_archive.append(response['list'][item]['item_id'])
