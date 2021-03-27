@@ -43,11 +43,11 @@ considered as TAG, so for each TAG you this value will be applied.
 
 """
 # CONFIGURATION ###########################################################
-TAGS = ['pocket'] # [] or ['tag1', 'tag2']
+TAGS = [] # [] or ['tag1', 'tag2']
 TAGS_EXCEPTIONS = [] # [] or ['tag3', 'tag4']
 SECTIONS_BY_DOMAIN = False
 INCLUDE_UNTAGGED = True
-ARCHIVE_DOWNLOADED = False
+ARCHIVE_DOWNLOADED = True
 MAX_ARTICLES_PER_FEED = 3000 
 OLDEST_ARTICLE = 365
 SORT_METHOD = 'newest'
@@ -321,207 +321,35 @@ class Pocket(BasicNewsRecipe):
                                         else:
                                             section_dict[tag].append(item)
 
+                    ############ APPEND ARTS FOR EACH TAG/DOMAIN #############
                     # At this point the section_dict is completed, either with
                     # domains or with tags
-                    self.log.exception("section_dict")
-                    #self.abort_recipe_processing('provisional end')
+
                     for section in section_dict:
                         arts = []
                         for item in section_dict.get(section):
-                                arts.append({
-                                            'title': response['list'][item]['resolved_title'],
-                                            'url': response['list'][item]['resolved_url'],
-                                            'date': response['list'][item]['time_added'],
-                                            'description': response['list'][item]['excerpt'],})
+                            arts.append({
+                                        'title': response['list'][item]['resolved_title'],
+                                        'url': response['list'][item]['resolved_url'],
+                                        'date': response['list'][item]['time_added'],
+                                        'description': response['list'][item]['excerpt'],})
+
+                            if (
+                                self.archive_downloaded 
+                                and response['list'][item]['item_id'] not in articles_to_ignore 
+                                and response['list'][item]['item_id'] not in self.to_archive
+                            ):
+                                self.to_archive.append(response['list'][item]['item_id'])
+
+                        if not SECTIONS_BY_DOMAIN and SORT_WITHIN_TAG_BY_TITLE:
+                            arts = sorted(arts, key = lambda i: i['title'])
+
                         if arts:
                                 articles.append((section, arts))
 
                     if not articles:
                         self.abort_recipe_processing('No articles in the Pocket account %s to download' % (self.config.user)) #, ' '.join(self.tags))) \n[tags: %s]
                     return articles
-                    #pending ARCHIVE_DOWNLOADED
-                    #pending
-                    #if SORT_WITHIN_TAG_BY_TITLE:
-                    #                   arts = sorted(arts, key = lambda i: i['title'])
-                    #pending
-                    #if arts: # if no arts, then don't create an empty entry with the tag only!
-                        #if tagItem not in TAGS_EXCEPTIONS: #Only include tags NOT excluded
-                         # articles.append((tagItem, arts))
-
-                ############ GET TAGS ###################
-                # ugly implementation because this is just a copy what happens next
-                # to be refactor at some point
-                #
-                if self.tagsList:
-                        pass  # so if you have any tags, skip this
-                else:
-                        request = mechanize.Request("https://getpocket.com/v3/get",
-                                        (u'{{'
-                                                '"consumer_key":"{0}",'
-                                                '"access_token":"{1}",'
-                                                '"count":"{2}",'
-                                                '"since":"{3}",'
-                                                '"state":"{5}",'
-                                                '"detailType":"complete",'
-                                                '"sort":"{4}"' '}}').format(
-                                                self.consumer_key,
-                                                self.config.token,
-                                                self.max_articles_per_feed * 1000,  # something "unlimited"
-                                                int(time()) - 86400 * self.oldest_article,
-                                                self.sort_method, 
-                                                self.to_pull,
-                                        ),
-                                        headers = {
-                                                'Content-Type': 'application/json; charset=UTF8',
-                                                'X-Accept': 'application/json'
-                                        }
-                                )
-
-                        try:
-                                response = self.browser.open(request)
-                                response = json.load(response)
-                        except HTTPError as e:
-                                if e.code == 401:
-                                        # Calibre access has been removed
-                                        self.reauthorize()
-                                        raise e
-
-                        if not response['list']:
-                                self.abort_recipe_processing('No unread articles in the Pocket account "{}"'.format(self.config.user))
-                        else:
-                                self.tagsList = []
-                                for item in response['list']:
-                                        try:
-                                                tagItem = list(response['list'][item]['tags'].keys())[0]
-                                        except KeyError:
-                                            self.log.exception("tag key error:" + response['list'][item]['resolved_url'])
-                                            continue
-                                        if tagItem not in self.tagsList:
-                                                self.tagsList.append(tagItem)
-
-                        sorted(self.tagsList, key=unicode.lower)
-
-                if self.include_untagged:
-                        self.tagsList.append('') # ugly hack
-
-                ###### PROCESS ########
-                for tagItem in self.tagsList:
-                        request = mechanize.Request("https://getpocket.com/v3/get",
-                                        (u'{{'
-                                                '"consumer_key":"{0}",'
-                                                '"access_token":"{1}",'
-                                                '"count":"{2}",'
-                                                '"since":"{3}",'
-                                                '"state":"{6}",'
-                                                '"detailType":"complete",'
-                                                '"sort":"{4}",'
-                                                '"tag":"{5}"'
-                                           '}}').format(
-                                                self.consumer_key,
-                                                self.config.token,
-                                                self.max_articles_per_feed,
-                                                int(time()) - 86400 * self.oldest_article,
-                                                self.sort_method, 
-                                                tagItem,
-                                                self.to_pull,
-                                        ),
-                                        headers = {
-                                                'Content-Type': 'application/json; charset=UTF8',
-                                                'X-Accept': 'application/json'
-                                        }
-                                )
-
-                        try:
-                                response = self.browser.open(request)
-                                response = json.load(response)
-                        except HTTPError as e:
-                                if e.code == 401:
-                                        # Calibre access has been removed
-                                        self.reauthorize()
-                                        raise e
-
-                        if not response['list']:
-                                # self.abort_recipe_processing('No unread articles in the Pocket account "{}"'.format(self.config.user))
-                                continue
-
-                        if self.archive_downloaded and response['list']:
-                                #Only archive items NOT in excluded tags.
-                                if tagItem not in TAGS_EXCEPTIONS:
-                                        for item in response['list'].values():
-                                                # Avoid duplicates as an article can appear in a tag and in the 'Untagged' section
-                                                if (item['item_id'] not in articles_to_ignore and item['item_id'] not in self.to_archive):
-                                                        self.to_archive.append(item['item_id'])
-
-                        if not response['list']:
-                                pass
-                        else:
-                                arts = []
-                                for item in response['list'].values(): # .values() sorted(response['list'].values(), key = lambda x: x['sort_id'])
-
-                                        # If the tag is excluded, store the item_id so we can test against the list
-                                        # when processing the empty tag, which includes all the articles
-                                        if tagItem in TAGS_EXCEPTIONS:
-                                                articles_to_ignore.append(item['item_id'])
-
-
-                                        try: # KeyError: u'resolved_title' error fix?                           
-
-                                                if SECTIONS_BY_DOMAIN:
-                                                        # Extract domain from the URL
-                                                        domain_tag = get_fld(item['resolved_url'])
-                                                        
-                                                        # Add the article under its domain
-                                                        if domain_tag not in domain_dict:
-                                                                domain_dict[domain_tag] = [item]
-                                                        else:
-                                                                domain_dict[domain_tag].append(item)
-                                                elif item['item_id'] not in articles_to_ignore:
-                                                        arts.append({
-                                                                'title': item['resolved_title'],
-                                                                'url': item['resolved_url'],
-                                                                'date': item['time_added'],
-                                                                'description': item['excerpt'],})
-
-
-                                        except KeyError:
-
-                                                print(response['list'], file=sys.stderr)
-
-                                                pass
-
-                                if SORT_WITHIN_TAG_BY_TITLE:
-                                        arts = sorted(arts, key = lambda i: i['title']) 
-                                        
-                                if not tagItem:
-                                        tagItem = "Untagged"
-
-                                if arts: # if no arts, then don't create an empty entry with the tag only!
-                                        if tagItem not in TAGS_EXCEPTIONS: #Only include tags NOT excluded
-                                                articles.append((tagItem, arts))
-
-        
-                if SECTIONS_BY_DOMAIN:
-                        # this (ugly) line is needed because the recipe ignores duplicates
-                        # articles. Therefore, as every article is present in a domain an in a
-                        # pocket tag (or the untagged fake tag), they wouldn't show up under its domain
-                        # therefore, currently you can have articles under pocket tags or
-                        # under domains, but not both
-                        articles = []
-
-                        for domain in domain_dict:
-                                arts = []
-                                for item in domain_dict.get(domain):
-                                        arts.append({
-                                                                'title': item['resolved_title'],
-                                                                'url': item['resolved_url'],
-                                                                'date': item['time_added'],
-                                                                'description': item['excerpt'],})
-                                if arts:
-                                        articles.append((domain, arts))
-                
-                if not articles:
-                        self.abort_recipe_processing('No articles in the Pocket account %s to download' % (self.config.user)) #, ' '.join(self.tags))) \n[tags: %s]
-                return articles
         
 
         def reauthorize(self):
