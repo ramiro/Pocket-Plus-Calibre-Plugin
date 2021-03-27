@@ -43,7 +43,7 @@ considered as TAG, so for each TAG you this value will be applied.
 
 """
 # CONFIGURATION ###########################################################
-TAGS = [] # [] or ['tag1', 'tag2']
+TAGS = ['pocket'] # [] or ['tag1', 'tag2']
 TAGS_EXCEPTIONS = [] # [] or ['tag3', 'tag4']
 SECTIONS_BY_DOMAIN = False
 INCLUDE_UNTAGGED = True
@@ -295,20 +295,31 @@ class Pocket(BasicNewsRecipe):
                                     section_dict[domain].append(item)
                         else:
                             # the keys of section_dict will be tags
-                            if (len(TAGS) == 0):
-                                #autotags enabled
-                                try:
-                                    tag = list(response['list'][item]['tags'].keys())[0]
-                                except KeyError:
+                            try:
+                                tag = list(response['list'][item]['tags'].keys())[0]
+                            except KeyError:
+                                if INCLUDE_UNTAGGED:
                                     tag = 'Untagged'
-
-                                if tag not in section_dict:
-                                    section_dict[tag] = [item]
                                 else:
-                                    section_dict[tag].append(item)
-                            else:
-                                # explicit tags
-                                self.abort_recipe_processing('provisional end eplicit tags')
+                                    tag = None
+
+                            # tag could be null if article untagged and INCLUDE_UNTAGGED=False
+                            if tag and tag not in TAGS_EXCEPTIONS:
+                                if (len(TAGS) == 0):
+                                    #autotags enabled, insert tag and item
+                                    if tag not in section_dict:
+                                        section_dict[tag] = [item]
+                                    else:
+                                        section_dict[tag].append(item)
+                                else:
+                                    # explicit tags, check that
+                                    # the tag belongs to the explicit array TAGS
+                                    # OR is is an untagged article and INCLUDE_UNTAGGED=True
+                                    if tag in TAGS or (tag == 'Untagged' and INCLUDE_UNTAGGED):
+                                        if tag not in section_dict:
+                                            section_dict[tag] = [item]
+                                        else:
+                                            section_dict[tag].append(item)
 
                     self.log.exception(section_dict)
                     self.abort_recipe_processing('provisional end')
