@@ -60,7 +60,7 @@ TITLE_WITH_TAGS = False
 import os
 try:
     user_path = os.path.expanduser("~")
-    exec(open(user_path + '/.pocketx.py').read())  # python3
+    exec(open(user_path + '/.pocket.py').read())  # python3
 except: # FileNotFoundError: noooot perfect! 
     pass
 #############################################################################
