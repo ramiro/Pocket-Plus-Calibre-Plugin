@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # vim:ft=python tabstop=8 expandtab shiftwidth=4 softtabstop=4
 from __future__ import print_function
-__version__ = '2.6.4'
+__version__ = '2.6.5'
 
 """
+2.6.5: Introduce ~/.pocketx.py local config system
 2.6.4: SECTIONS_BY_DOMAIN, an excellent implementation from @alvaroreig to make sections 
        by domains (of URLs) 210322
 2.6.3: With fix from @AkashPatel95 #26 201122
@@ -55,7 +56,14 @@ SORT_WITHIN_TAG_BY_TITLE = False
 TO_PULL = 'unread'
 TITLE_WITH_TAGS = False
 #############################################################################
-
+# add a code for configuration set in your home folder
+import os
+try:
+    user_path = os.path.expanduser("~")
+    exec(open(user_path + '/.pocketx.py').read())  # python3
+except: # FileNotFoundError: noooot perfect! 
+    pass
+#############################################################################
 from calibre.constants import config_dir
 from calibre.utils.config import JSONConfig
 from calibre.web.feeds.news import BasicNewsRecipe
