@@ -4,7 +4,7 @@ from __future__ import print_function
 __version__ = '2.6.5'
 
 """
-2.6.5: Introduce ~/.pocketx.py local config system
+2.6.5: Introduce ~/.pocket.py local config system
 2.6.4: SECTIONS_BY_DOMAIN, an excellent implementation from @alvaroreig to make sections 
        by domains (of URLs) 210322
 2.6.3: With fix from @AkashPatel95 #26 201122
@@ -59,6 +59,8 @@ TITLE_WITH_TAGS = False
 # add a code for configuration set in your home folder
 import os
 try:
+    # variables as Python code into ~/.pocket.py to overwrite variables above, e.g.:
+    # MAX_ARTICLES_PER_FEED = 30
     user_path = os.path.expanduser("~")
     exec(open(user_path + '/.pocket.py').read())  # python3
 except: # FileNotFoundError: noooot perfect! 
