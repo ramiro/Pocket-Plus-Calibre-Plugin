@@ -315,10 +315,11 @@ class Pocket(BasicNewsRecipe):
                             if tag and not any(tagcheck in TAGS_EXCEPTIONS for tagcheck in tag):
                                 if (len(TAGS) == 0):
                                     #autotags enabled, insert tag and item
-                                    if tag not in section_dict:
-                                        section_dict[tag] = [item]
-                                    else:
-                                        section_dict[tag].append(item)
+                                    for tagcheck in tag:
+                                        if tagcheck not in section_dict:
+                                            section_dict[tagcheck] = [item]
+                                        else:
+                                            section_dict[tagcheck].append(item)
                                 else:
                                     # explicit tags, check that
                                     # the tag belongs to the explicit array TAGS
