@@ -304,7 +304,7 @@ class Pocket(BasicNewsRecipe):
                         else:
                             # the keys of section_dict will be tags
                             try:
-                                tag = list(response['list'][item]['tags'].keys())[0]
+                                tag = list(response['list'][item]['tags'].keys())
                             except KeyError:
                                 if INCLUDE_UNTAGGED:
                                     tag = 'Untagged'
@@ -312,7 +312,7 @@ class Pocket(BasicNewsRecipe):
                                     tag = None
 
                             # tag could be None if article untagged and INCLUDE_UNTAGGED=False
-                            if tag and tag not in TAGS_EXCEPTIONS:
+                            if tag and not any(tagcheck in TAGS_EXCEPTIONS for tagcheck in tag):
                                 if (len(TAGS) == 0):
                                     #autotags enabled, insert tag and item
                                     if tag not in section_dict:
@@ -323,11 +323,12 @@ class Pocket(BasicNewsRecipe):
                                     # explicit tags, check that
                                     # the tag belongs to the explicit array TAGS
                                     # OR is is an untagged article and INCLUDE_UNTAGGED=True
-                                    if tag in TAGS or (tag == 'Untagged' and INCLUDE_UNTAGGED):
-                                        if tag not in section_dict:
-                                            section_dict[tag] = [item]
-                                        else:
-                                            section_dict[tag].append(item)
+                                    for tagcheck in tag:
+                                        if tagcheck in TAGS or (tagcheck == 'Untagged' and INCLUDE_UNTAGGED):
+                                            if tagcheck not in section_dict:
+                                                section_dict[tagcheck] = [item]
+                                            else:
+                                                section_dict[tagcheck].append(item)
 
                     ############ APPEND ARTS FOR EACH TAG/DOMAIN #############
                     # At this point the section_dict is completed, either with
