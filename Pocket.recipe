@@ -307,7 +307,7 @@ class Pocket(BasicNewsRecipe):
                                 tag = list(response['list'][item]['tags'].keys())
                             except KeyError:
                                 if INCLUDE_UNTAGGED:
-                                    tag = 'Untagged'
+                                    tag = ['Untagged']
                                 else:
                                     tag = None
 
