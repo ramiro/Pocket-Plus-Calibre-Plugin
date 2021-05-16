@@ -55,6 +55,7 @@ SORT_METHOD = 'newest'
 SORT_WITHIN_TAG_BY_TITLE = False
 TO_PULL = 'unread'
 TITLE_WITH_TAGS = False
+ALLOW_DUPLICATES = True
 #############################################################################
 # add a code for configuration set in your home folder
 SITE_PACKAGE_PATH = ''
@@ -175,7 +176,10 @@ class Pocket(BasicNewsRecipe):
         auto_cleanup = True
         no_stylesheets = True
         use_embedded_content = False
-        ignore_duplicate_articles = {'url'}
+        if ALLOW_DUPLICATES:
+            ignore_duplicate_articles = {}
+        else:
+            ignore_duplicate_articles = {'url'}
 
         # Custom developer settings
         consumer_key = '87006-2ecad30a91903f54baf0ee05'
