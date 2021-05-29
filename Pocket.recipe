@@ -295,8 +295,10 @@ class Pocket(BasicNewsRecipe):
                 if not response['list']:
                     self.abort_recipe_processing('No unread articles in the Pocket account "{}"'.format(self.config.user))
                 else:
-                    for item in response['list']:
-                        if SECTIONS_BY_DOMAIN:
+                    for item in dict(response['list']):
+                        if response['list'][item]['status'] == '2':
+                            del response['list'][item]
+                        elif SECTIONS_BY_DOMAIN:
                             # the keys of section_dict will be domains
                             
                             # Extract domain from the URL
@@ -344,20 +346,18 @@ class Pocket(BasicNewsRecipe):
                     for section in section_dict:
                         arts = []
                         for item in section_dict.get(section):
-                            try:
-                                arts.append({
-                                            'title': response['list'][item]['resolved_title'],
-                                            'url': response['list'][item]['resolved_url'],
-                                            'date': response['list'][item]['time_added'],
-                                            'description': response['list'][item]['excerpt'],})
+                            arts.append({
+                                        'title': response['list'][item]['resolved_title'],
+                                        'url': response['list'][item]['resolved_url'],
+                                        'date': response['list'][item]['time_added'],
+                                        'description': response['list'][item]['excerpt'],})
 
-                                if (
-                                    self.archive_downloaded
-                                    and response['list'][item]['item_id'] not in self.to_archive
-                                ):
-                                    self.to_archive.append(response['list'][item]['item_id'])
-                            except KeyError:
-                                pass
+                            if (
+                                self.archive_downloaded
+                                and response['list'][item]['item_id'] not in self.to_archive
+                            ):
+                                self.to_archive.append(response['list'][item]['item_id'])
+
 
                         if not SECTIONS_BY_DOMAIN and SORT_WITHIN_TAG_BY_TITLE:
                             arts = sorted(arts, key = lambda i: i['title'])
