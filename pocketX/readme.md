@@ -1,3 +1,5 @@
+Branch out into this now https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin-X
+
 # PocketX
 (cross connectivity)
 
