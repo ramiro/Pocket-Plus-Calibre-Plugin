@@ -10,7 +10,7 @@ Pocket+ recipe for Calibre
 </br></br>
 <b>This plugin allows users to get their Pocket-ed articles with Calibre and send them as an e-book to their prefered e-book reader. You can schedule this process and every day get the freshest e-book with your Pocket-ed articles!</b>
 
-There is also experimental version of this plugin: https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin-X
+There is also experimental version of this plugin: https://github.com/mmagnus/PocketX-Calibre-Plugin
 
 </div>
 
