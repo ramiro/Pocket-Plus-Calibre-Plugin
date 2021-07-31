@@ -3,3 +3,4 @@ bucket/
 *.mobi
 *.epub
 mobi/
+secret.sh
