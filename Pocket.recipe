@@ -60,17 +60,20 @@ SORT_WITHIN_TAG_BY_TITLE = False
 TO_PULL = 'unread'
 TITLE_WITH_TAGS = False
 ALLOW_DUPLICATES = True
-#############################################################################
-# add a code for configuration set in your home folder
+USE_GLOBAL_CONFIG = False
+# ADV CONFIGURATION #########################################################
 SITE_PACKAGE_PATH = ''
-import os
-try:
-    # variables as Python code into ~/.pocket.py to overwrite variables above, e.g.:
-    # MAX_ARTICLES_PER_FEED = 30
-    user_path = os.path.expanduser("~")
-    exec(open(user_path + '/.pocket.py').read())  # python3
-except: # FileNotFoundError: noooot perfect! 
-    pass
+#############################################################################
+# code for configuration set in your home folder
+if USE_GLOBAL_CONFIG:
+    import os
+    try:
+        # variables as Python code into ~/.pocket.py to overwrite variables above, e.g.:
+        # MAX_ARTICLES_PER_FEED = 30
+        user_path = os.path.expanduser("~")
+        exec(open(user_path + '/.pocket.py').read())  # python3
+    except: # FileNotFoundError: noooot perfect! 
+        pass
 #############################################################################
 from calibre.constants import config_dir
 from calibre.utils.config import JSONConfig
@@ -84,7 +87,6 @@ if SECTIONS_BY_DOMAIN:
     if SITE_PACKAGE_PATH:
         sys.path.append(SITE_PACKAGE_PATH)
     from tld import get_fld
-
 
 import errno
 import json
