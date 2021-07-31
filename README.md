@@ -64,6 +64,42 @@ and edit the Python code.
 
 ![](doc/settings.png)
 
+**TAGS** (list of strings or empty list: []) if [] (empty list) then the plugin will connect Pocket and fetch articles based on the configuration of the plugin.
+        Next, the plugin will get tags of these articles and group them into sections in the final ebook.
+        If TAGS has elements, e.g., TAGS = ['tag1', 'tag2'] then only these tags will be fetched from Pocket.
+
+**TAGS_EXCEPTIONS** (list of strings or empty list: []) if [] (empty list) then the plugin will ignore it.
+        If TAGS_EXCEPTIONS has elements, e.g., TAGS_EXCEPTIONS = ['tag3', 'tag4'] then the articles tagged with this tags will be ignored.
+        That is, tag3 and tag4 won't appear as sections, and it's articles won't appear in the  "Untagged" section.
+        This variable is meant to be used with TAGS = [], as it doesn’t make any sense to specify a tag both in TAGS and in TAGS_EXCEPTIONS.
+
+**SECTIONS_BY_DOMAIN** If activated, the articles will be grouped by first level domain. This will override any
+        tag configuration (that is: TAGS, TAGS_EXCEPTIONS, INCLUDE_UNTAGGED). This is because the recipe ignores duplicated
+        articles, and therefore an article can't appear under a "real" (pocket) tag and under the fake tag with its domain.
+
+**SECTIONS_BY_DOMAIN_USING_TLD** you can install TLD and use it to get domains, but this requires installed library in 
+        a way that Calibre will see it (I had a huge problem to get this running @mmagnus), so there is a new
+        way to get domain based on parsing URL, less sophisticated but more reliable (in my opinion @mmagnus)
+
+**INCLUDE_UNTAGGED** (True or False) if True then put all fetched and untagged articles in the last section 'Untagged'.
+        If False then skip these articles and don't create the section 'Untagged'. Bear in mind that if TAGS is populated ( e.g. TAGS = ['tag1', 'tag2']),
+        INCLUDE_UNTAGED = True and other tags exist in Pokcet (e.g. tag3,tag4) then the Untagged section will include untagged articles 
+        in Pocket AND articles tagged with tag3 and tag4. That behavior can be avoided using TAGS_EXCEPTION
+
+**ARCHIVE_DOWNLOADED** (True or False) do you want to archive articles after fetching 
+
+**MAX_ARTICLES_PER_FEED** (number) how many articles do you want to fetch for FEED (FEED could be also 
+considered as TAG, so for each TAG you this value will be applied.
+
+**SORT_METHOD** ('oldest' or 'newest') way how the articles are sorted
+
+**OLDEST_ARTICLE** (number) fetch articles added (modified) in Pocket for number of days, 7 will give you articles added/modified in Pocket for the last week 
+ 
+**TO_PULL** ('all' or 'unread') What articles to pull? unread only or all?
+
+**TITLE_WITH_TAGS** (True or False) if True will the ebook filename will be like
+        Pocket: INVEST P2P [Sun, 05 Jan 2020] for many tags this might be to long, if you make a single tag ebook this might be super fun!
+
 # Installation
   
 * Download files https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/archive/master.zip
@@ -85,6 +121,7 @@ Report any issues here: https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/is
 
 # Changelog
 
+* 210731 [v2.7.3] Replace tld with standard Python way (not as good as tld but works without extra package) if SECTIONS_BY_DOMAIN_USING_TLD = False
 * 201122 [v2.6.3] With fix from @AkashPatel95 #26
 * 200515 [v2.4.0] Auto tags! Automatically group articles into Sections based on Pocket's tags.
 * 200514 [v2.3.x] Redesigned tags system, attempt to fix `sort_id` problem, move OLDEST_ARTICLE to the top
