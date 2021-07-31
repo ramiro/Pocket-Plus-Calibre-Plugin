@@ -10,6 +10,8 @@ Pocket+ recipe for Calibre
 </br></br>
 <b>This plugin allows users to get their Pocket-ed articles with Calibre and send them as an e-book to their prefered e-book reader. You can schedule this process and every day get the freshest e-book with your Pocket-ed articles!</b>
 
+There is also experimental version of this plugin: https://github.com/mmagnus/PocketX-Calibre-Plugin
+
 </div>
 
 Table of contents:
@@ -99,6 +101,9 @@ considered as TAG, so for each TAG you this value will be applied.
 
 **TITLE_WITH_TAGS** (True or False) if True will the ebook filename will be like
         Pocket: INVEST P2P [Sun, 05 Jan 2020] for many tags this might be to long, if you make a single tag ebook this might be super fun!
+
+**ALLOW_DUPLICATES** (True or False) if True articles that have multiple tags matching those defined in TAGS are duplicated in each matched tag
+        Eg.: TAGS = ['tag1','tag2'] then article1 that has both tags will appear in both sections tag1 and tag2. 
 
 # Installation
   
