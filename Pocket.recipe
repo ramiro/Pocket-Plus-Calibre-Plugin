@@ -44,6 +44,8 @@ considered as TAG, so for each TAG you this value will be applied.
 **TITLE_WITH_TAGS** (True or False) if True will the ebook filename will be like
         Pocket: INVEST P2P [Sun, 05 Jan 2020] for many tags this might be to long, if you make a single tag ebook this might be super fun!
 
+**ALLOW_DUPLICATES** (True or False) if True articles that have multiple tags matching those defined in TAGS are duplicated in each matched tag
+        Eg.: TAGS = ['tag1','tag2'] then article1 that has both tags will appear in both sections tag1 and tag2. 
 """
 # CONFIGURATION ###########################################################
 TAGS = [] # [] or ['tag1', 'tag2']
@@ -57,6 +59,7 @@ SORT_METHOD = 'newest'
 SORT_WITHIN_TAG_BY_TITLE = False
 TO_PULL = 'unread'
 TITLE_WITH_TAGS = False
+ALLOW_DUPLICATES = True
 #############################################################################
 # add a code for configuration set in your home folder
 SITE_PACKAGE_PATH = ''
@@ -177,7 +180,10 @@ class Pocket(BasicNewsRecipe):
         auto_cleanup = True
         no_stylesheets = True
         use_embedded_content = False
-        ignore_duplicate_articles = {'url'}
+        if ALLOW_DUPLICATES:
+            ignore_duplicate_articles = {}
+        else:
+            ignore_duplicate_articles = {'url'}
 
         # Custom developer settings
         consumer_key = '87006-2ecad30a91903f54baf0ee05'
@@ -291,8 +297,10 @@ class Pocket(BasicNewsRecipe):
                 if not response['list']:
                     self.abort_recipe_processing('No unread articles in the Pocket account "{}"'.format(self.config.user))
                 else:
-                    for item in response['list']:
-                        if SECTIONS_BY_DOMAIN:
+                    for item in dict(response['list']):
+                        if response['list'][item]['status'] == '2':
+                            del response['list'][item]
+                        elif SECTIONS_BY_DOMAIN:
                             # the keys of section_dict will be domains
                             
                             # Extract domain from the URL
@@ -306,30 +314,32 @@ class Pocket(BasicNewsRecipe):
                         else:
                             # the keys of section_dict will be tags
                             try:
-                                tag = list(response['list'][item]['tags'].keys())[0]
+                                tag = list(response['list'][item]['tags'].keys())
                             except KeyError:
                                 if INCLUDE_UNTAGGED:
-                                    tag = 'Untagged'
+                                    tag = ['Untagged']
                                 else:
                                     tag = None
 
                             # tag could be None if article untagged and INCLUDE_UNTAGGED=False
-                            if tag and tag not in TAGS_EXCEPTIONS:
+                            if tag and not any(tagcheck in TAGS_EXCEPTIONS for tagcheck in tag):
                                 if (len(TAGS) == 0):
                                     #autotags enabled, insert tag and item
-                                    if tag not in section_dict:
-                                        section_dict[tag] = [item]
-                                    else:
-                                        section_dict[tag].append(item)
+                                    for tagcheck in tag:
+                                        if tagcheck not in section_dict:
+                                            section_dict[tagcheck] = [item]
+                                        else:
+                                            section_dict[tagcheck].append(item)
                                 else:
                                     # explicit tags, check that
                                     # the tag belongs to the explicit array TAGS
                                     # OR is is an untagged article and INCLUDE_UNTAGGED=True
-                                    if tag in TAGS or (tag == 'Untagged' and INCLUDE_UNTAGGED):
-                                        if tag not in section_dict:
-                                            section_dict[tag] = [item]
-                                        else:
-                                            section_dict[tag].append(item)
+                                    for tagcheck in tag:
+                                        if tagcheck in TAGS or (tagcheck == 'Untagged' and INCLUDE_UNTAGGED):
+                                            if tagcheck not in section_dict:
+                                                section_dict[tagcheck] = [item]
+                                            else:
+                                                section_dict[tagcheck].append(item)
 
                     ############ APPEND ARTS FOR EACH TAG/DOMAIN #############
                     # At this point the section_dict is completed, either with
@@ -345,10 +355,11 @@ class Pocket(BasicNewsRecipe):
                                         'description': response['list'][item]['excerpt'],})
 
                             if (
-                                self.archive_downloaded 
+                                self.archive_downloaded
                                 and response['list'][item]['item_id'] not in self.to_archive
                             ):
                                 self.to_archive.append(response['list'][item]['item_id'])
+
 
                         if not SECTIONS_BY_DOMAIN and SORT_WITHIN_TAG_BY_TITLE:
                             arts = sorted(arts, key = lambda i: i['title'])
