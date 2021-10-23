@@ -368,11 +368,23 @@ class Pocket(BasicNewsRecipe):
                     for section in section_dict:
                         arts = []
                         for item in section_dict.get(section):
+                            try:
+                                title = response['list'][item]['resolved_title']
+                            except KeyError:
+                                title = 'error: title'
+                            try:
+                                url =  response['list'][item]['resolved_url']
+                            except KeyError:
+                                url = 'error: url'
+                            try:
+                                desc = response['list'][item]['excerpt']
+                            except KeyError:
+                                desc = 'error: description'
                             arts.append({
-                                        'title': response['list'][item]['resolved_title'],
-                                        'url': response['list'][item]['resolved_url'],
+                                        'title': title,
+                                        'url': url,
                                         'date': response['list'][item]['time_added'],
-                                        'description': response['list'][item]['excerpt'],})
+                                        'description': desc,})
 
                             if (
                                 self.archive_downloaded
