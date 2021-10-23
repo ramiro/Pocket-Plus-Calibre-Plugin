@@ -43,7 +43,7 @@ Now, you get **Untagged** and **The Sections created based on you Pocket tags**:
 
 <table><tr><td><img src="doc/06.jpg" alt="" ></td><td><img src="doc/04.jpg" alt="" /></td><td><img src="doc/05.jpg" alt="" ></td></tr></table>
 
-Or sections based on **domains** of URLs:
+Or sections based on **domains** of URsL (great contribution from [@alvaroreig](https://github.com/alvaroreig)):
 
 <table><tr><td><img src="doc/07.png" alt="" ></td></tr></table>
 
