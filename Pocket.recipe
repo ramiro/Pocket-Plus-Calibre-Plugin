@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # vim:ft=python tabstop=8 expandtab shiftwidth=4 softtabstop=4
 from __future__ import print_function
-__version__ = '2.7.3'
+__version__ = '2.7.4'
 
 """
+2.7.4: Fix #46 KeyError: u'resolved_title'
 2.7.3: Replace tld with standard Python way (not as good as tld but works without extra package) if SECTIONS_BY_DOMAIN_USING_TLD = False
 2.7.2: Change default MAX_ARTICLES_PER_FEED to 30
 2.7.1: A fix for import tld
