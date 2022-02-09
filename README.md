@@ -24,7 +24,7 @@ Table of contents:
   * [Tips](#tips)
   * [Development](#development)
   * [Workflow](#workflow)
-  * [Troubleshooting](Troubleshooting)
+  * [Troubleshooting](#troubleshooting)
   
 [Pocket](https://getpocket.com/), previously known as Read It Later, is an application and service for managing a reading list of articles from the Internet. The application allows the user to save an article or web page to the cloud for later reading. The article is then sent to the user's Pocket list (synced to all of their devices) for offline reading. Pocket removes clutter from articles and allows the user to adjust text settings for easier reading [Source](https://en.wikipedia.org/wiki/Pocket_%28application%29).
 
