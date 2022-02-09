@@ -217,7 +217,8 @@ Sometimes I want to read something NOW or as a single e-book and I don't want to
 https://www.fivefilters.org/push-to-kindle/ (for Safari, Chrome, Firefox) https://www.amazon.com/gp/sendtokindle/chrome (for Chrome)
 # Troubleshooting
 ## FileNotFoundError: "custom_recipes/Pocket.js"
-I think this is a problem if you haven't granted accessed (happend to me, @mmagnus, when I run the bash script on a new machine). Go to Installtion and grant access to your Pocket.
+
+I think this is a problem if you haven't granted access (happen to @mmagnus, when I run the bash script on a new machine). Go to Installation and grant access to your Pocket.
 
 	Conversion options changed from defaults:
 	  test: None
