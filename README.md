@@ -212,3 +212,28 @@ https://p2k.co https://www.crofflr.com/#/home
 Sometimes I want to read something NOW or as a single e-book and I don't want to go through Calibre, then I use these plugins to push an article directly to Kindle. 
 
 https://www.fivefilters.org/push-to-kindle/ (for Safari, Chrome, Firefox) https://www.amazon.com/gp/sendtokindle/chrome (for Chrome)
+# Troubleshooting
+## FileNotFoundError: "custom_recipes/Pocket.js"
+I think this is a problem if you haven't granted accessed (happend to me, @mmagnus, when I run the bash script on a new machine). Go to Installtion and grant access to your Pocket.
+
+	Conversion options changed from defaults:
+	  test: None
+	1% Converting input to HTML...
+	InputFormatPlugin: Recipe Input running
+	{}
+	Using custom recipe
+	Using user agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36
+	Traceback (most recent call last):
+	  File "runpy.py", line 194, in _run_module_as_main
+	  File "runpy.py", line 87, in _run_code
+	  File "site.py", line 39, in <module>
+	  File "site.py", line 35, in main
+	  File "calibre/ebooks/conversion/cli.py", line 419, in main
+	  File "calibre/ebooks/conversion/plumber.py", line 1111, in run
+	  File "calibre/customize/conversion.py", line 244, in __call__
+	  File "calibre/ebooks/conversion/plugins/recipe_input.py", line 137, in convert
+	  File "calibre/web/feeds/news.py", line 931, in __init__
+	  File "<string>", line 518, in get_browser
+	  File "<string>", line 506, in ensure_authorization
+	  File "<string>", line 133, in save
+	FileNotFoundError: [Errno 2] No such file or directory: '/Users/magnus/Library/Preferences/calibre/custom_recipes/Pocket.js
