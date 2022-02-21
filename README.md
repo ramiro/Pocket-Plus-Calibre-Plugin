@@ -130,7 +130,7 @@ Report any issues here: https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/is
 
 # Changelog
 
-https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/releases/tag/v2.7.4
+https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/releases
 
 * 210731 [v2.7.3] Replace tld with standard Python way (not as good as tld but works without extra package) if SECTIONS_BY_DOMAIN_USING_TLD = False
 * 201122 [v2.6.3] With fix from @AkashPatel95 #26
@@ -218,6 +218,7 @@ https://p2k.co https://www.crofflr.com/#/home
 Sometimes I want to read something NOW or as a single e-book and I don't want to go through Calibre, then I use these plugins to push an article directly to Kindle. 
 
 https://www.fivefilters.org/push-to-kindle/ (for Safari, Chrome, Firefox) https://www.amazon.com/gp/sendtokindle/chrome (for Chrome)
+
 # Troubleshooting
 ## FileNotFoundError: "custom_recipes/Pocket.js"
 
