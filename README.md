@@ -130,6 +130,8 @@ Report any issues here: https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/is
 
 # Changelog
 
+https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/releases/tag/v2.7.4
+
 * 210731 [v2.7.3] Replace tld with standard Python way (not as good as tld but works without extra package) if SECTIONS_BY_DOMAIN_USING_TLD = False
 * 201122 [v2.6.3] With fix from @AkashPatel95 #26
 * 200515 [v2.4.0] Auto tags! Automatically group articles into Sections based on Pocket's tags.
