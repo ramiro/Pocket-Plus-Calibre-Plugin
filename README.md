@@ -1,6 +1,6 @@
 
 <div align="center">
-	<img src="doc/banner.png" width="400px">
+	<img src="doc/bannerBoox.png" width="400px">
 	
 <h1>
 Pocket+ recipe for Calibre
