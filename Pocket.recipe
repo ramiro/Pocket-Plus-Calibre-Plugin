@@ -310,6 +310,7 @@ class Pocket(BasicNewsRecipe):
                     for item in dict(response['list']):
                         if response['list'][item]['status'] == '2':
                             del response['list'][item]
+                        # If the URL contains any URL_KEYWORD_EXCEPTIONS, ignore article
                         elif any(pattern in response['list'][item]['given_url'] for pattern in URL_KEYWORD_EXCEPTIONS):
                             print("Ignoring article due to keyword patterns:" + response['list'][item]['given_url'])
                             del response['list'][item]
