@@ -23,6 +23,8 @@ __version__ = '2.7.4'
         That is, tag3 and tag4 won't appear as sections, and it's articles won't appear in the  "Untagged" section.
         This variable is meant to be used with TAGS = [], as it doesn’t make any sense to specify a tag both in TAGS and in TAGS_EXCEPTIONS.
 
+**URL_KEYWORD_EXCEPTIONS** (list of keywords such as, if the URL of the article contains any keyword, then the plugin will ignore the article)
+
 **SECTIONS_BY_DOMAIN** If activated, the articles will be grouped by first level domain. This will override any
         tag configuration (that is: TAGS, TAGS_EXCEPTIONS, INCLUDE_UNTAGGED). This is because the recipe ignores duplicated
         articles, and therefore an article can't appear under a "real" (pocket) tag and under the fake tag with its domain.
@@ -56,8 +58,8 @@ considered as TAG, so for each TAG you this value will be applied.
 # CONFIGURATION ###########################################################
 TAGS = [] # [] or ['tag1', 'tag2']
 TAGS_EXCEPTIONS = [] # [] or ['tag3', 'tag4']
+URL_KEYWORD_EXCEPTIONS = [] # [] or ['keyword1', 'keyword2']
 SECTIONS_BY_DOMAIN = False
-SECTIONS_BY_DOMAIN_USING_TLD = False
 INCLUDE_UNTAGGED = True
 ARCHIVE_DOWNLOADED = True
 MAX_ARTICLES_PER_FEED = 30
@@ -92,12 +94,6 @@ from time import localtime, strftime, time
 import sys
 SITE_PACKAGE_PATH = ''
 if SECTIONS_BY_DOMAIN:
-    # maybe this is only me? @mmagnus but I need explicit append like this
-    if SECTIONS_BY_DOMAIN_USING_TLD:
-        if SITE_PACKAGE_PATH:
-            sys.path.append(SITE_PACKAGE_PATH)
-        from tld import get_fld
-    else:
         from urllib.parse import urlparse
 
 import errno
@@ -314,14 +310,14 @@ class Pocket(BasicNewsRecipe):
                     for item in dict(response['list']):
                         if response['list'][item]['status'] == '2':
                             del response['list'][item]
+                        # If the URL contains any URL_KEYWORD_EXCEPTIONS, ignore article
+                        elif any(pattern in response['list'][item]['given_url'] for pattern in URL_KEYWORD_EXCEPTIONS):
+                            print("Ignoring article due to keyword patterns:" + response['list'][item]['given_url'])
+                            del response['list'][item]
                         elif SECTIONS_BY_DOMAIN:
                             # the keys of section_dict will be domains
                             # Extract domain from the URL
-                            if SECTIONS_BY_DOMAIN_USING_TLD:
-                                domain = get_fld(response['list'][item]['resolved_url'])
-                            else:
-                                # https://stackoverflow.com/questions/44113335/extract-domain-from-url-in-python
-                                domain =  urlparse(response['list'][item]['resolved_url']).netloc.replace('www.', '')
+                            domain =  urlparse(response['list'][item]['resolved_url']).netloc.replace('www.', '')
 
                             url = response['list'][item]['resolved_url']
                             print('>> url', url, file=sys.stderr)
