@@ -9,7 +9,7 @@ __version__ = '2.7.4'
 2.7.2: Change default MAX_ARTICLES to 30
 2.7.1: A fix for import tld
 2.7:   Introduce ~/.pocket.py local config system
-2.6.4: SECTIONS_BY_DOMAIN, an excellent implementation from @alvaroreig to make sections 
+2.6.4: SECTIONS_BY_DOMAIN, an excellent implementation from @alvaroreig to make sections
        by domains (of URLs) 210322
 2.6.3: With fix from @AkashPatel95 #26 201122
 2.6.2: Fix. Add also removal of H1 to clean up all titles, to insert a new one
@@ -29,30 +29,30 @@ __version__ = '2.7.4'
         tag configuration (that is: TAGS, TAGS_EXCEPTIONS, INCLUDE_UNTAGGED). This is because the recipe ignores duplicated
         articles, and therefore an article can't appear under a "real" (pocket) tag and under the fake tag with its domain.
 
-**SECTIONS_BY_DOMAIN_USING_TLD** you can install TLD and use it to get domains, but this requires installed library in 
+**SECTIONS_BY_DOMAIN_USING_TLD** you can install TLD and use it to get domains, but this requires installed library in
         a way that Calibre will see it (I had a huge problem to get this running @mmagnus), so there is a new
         way to get domain based on parsing URL, less sophisticated but more reliable (in my opinion @mmagnus)
 
 **INCLUDE_UNTAGGED** (True or False) if True then put all fetched and untagged articles in the last section 'Untagged'.
         If False then skip these articles and don't create the section 'Untagged'. Bear in mind that if TAGS is populated ( e.g. TAGS = ['tag1', 'tag2']),
-        INCLUDE_UNTAGED = True and other tags exist in Pokcet (e.g. tag3,tag4) then the Untagged section will include untagged articles 
+        INCLUDE_UNTAGED = True and other tags exist in Pokcet (e.g. tag3,tag4) then the Untagged section will include untagged articles
         in Pocket AND articles tagged with tag3 and tag4. That behavior can be avoided using TAGS_EXCEPTION
 
-**ARCHIVE_DOWNLOADED** (True or False) do you want to archive articles after fetching 
+**ARCHIVE_DOWNLOADED** (True or False) do you want to archive articles after fetching
 
 **MAX_ARTICLES** (number) how many articles do you want to fetch in total
 
 **SORT_METHOD** ('oldest' or 'newest') way how the articles are sorted
 
-**OLDEST_ARTICLE** (number) fetch articles added (modified) in Pocket for number of days, 7 will give you articles added/modified in Pocket for the last week 
- 
+**OLDEST_ARTICLE** (number) fetch articles added (modified) in Pocket for number of days, 7 will give you articles added/modified in Pocket for the last week
+
 **TO_PULL** ('all' or 'unread') What articles to pull? unread only or all?
 
 **TITLE_WITH_TAGS** (True or False) if True will the ebook filename will be like
         Pocket: INVEST P2P [Sun, 05 Jan 2020] for many tags this might be to long, if you make a single tag ebook this might be super fun!
 
 **ALLOW_DUPLICATES** (True or False) if True articles that have multiple tags matching those defined in TAGS are duplicated in each matched tag
-        Eg.: TAGS = ['tag1','tag2'] then article1 that has both tags will appear in both sections tag1 and tag2. 
+        Eg.: TAGS = ['tag1','tag2'] then article1 that has both tags will appear in both sections tag1 and tag2.
 """
 # CONFIGURATION ###########################################################
 TAGS = [] # [] or ['tag1', 'tag2']
@@ -79,7 +79,7 @@ if USE_GLOBAL_CONFIG:
         # variables as Python code into ~/.pocket.py to overwrite variables above, e.g.:
         user_path = os.path.expanduser("~")
         exec(open(user_path + '/.pocket.py').read())  # python3
-    except: # FileNotFoundError: noooot perfect! 
+    except: # FileNotFoundError: noooot perfect!
         pass
 #############################################################################
 from calibre.constants import config_dir
@@ -167,11 +167,11 @@ class Pocket(BasicNewsRecipe):
         category = 'info, custom, Pocket'
 
         # User-configurable settings -----------------------------------------------
-        tagsList = TAGS 
+        tagsList = TAGS
         oldest_article = OLDEST_ARTICLE
         max_articles = MAX_ARTICLES
         archive_downloaded = ARCHIVE_DOWNLOADED
-        include_untagged = INCLUDE_UNTAGGED    
+        include_untagged = INCLUDE_UNTAGGED
         series_name = 'Pocket'
         sort_method = SORT_METHOD
         to_pull = TO_PULL
@@ -183,7 +183,7 @@ class Pocket(BasicNewsRecipe):
         # will make square cover; this will replace text and cover of the default
         # cover_url = "https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/raw/master/doc/cover.png"
         # --------------------------------------------------------------------------
-        
+
         # Inherited developer settings
         auto_cleanup = True
         no_stylesheets = True
@@ -200,7 +200,7 @@ class Pocket(BasicNewsRecipe):
         to_archive = []
 
         simultaneous_downloads = 10
-        
+
         extra_css = '.touchscreen_navbar {display: none;}'
         extra_css = '.calibre_navbar { visibility: hidden; }'
         # TITLE_WITH_TAGS
@@ -284,7 +284,7 @@ class Pocket(BasicNewsRecipe):
                                                 self.config.token,
                                                 self.max_articles * 1000,  # something "unlimited"
                                                 int(time()) - 86400 * self.oldest_article,
-                                                self.sort_method, 
+                                                self.sort_method,
                                                 self.to_pull,
                                         ),
                                         headers = {
@@ -319,7 +319,7 @@ class Pocket(BasicNewsRecipe):
 
                             url = response['list'][item]['resolved_url']
                             print('>> url', url, file=sys.stderr)
-                            print('>>> domain', domain, file=sys.stderr)                                
+                            print('>>> domain', domain, file=sys.stderr)
 
                             # Add the article under its domain
                             if domain not in section_dict:
@@ -397,7 +397,7 @@ class Pocket(BasicNewsRecipe):
                     if not articles:
                         self.abort_recipe_processing('No articles in the Pocket account %s to download' % (self.config.user)) #, ' '.join(self.tags))) \n[tags: %s]
                     return articles
-        
+
 
         def reauthorize(self):
                 self.config = PocketConfig();

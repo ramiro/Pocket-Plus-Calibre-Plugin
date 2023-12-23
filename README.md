@@ -1,13 +1,13 @@
 
 <div align="center">
 	<img src="doc/bannerBoox.png" width="400px">
-	
+
 <h1>
 Pocket+ recipe for Calibre
 </h1>
 
 <a href='https://ko-fi.com/R5R6AERGM' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi2.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
-	
+
 
 [![tag](https://img.shields.io/github/release/mmagnus/Pocket-Plus-Calibre-Plugin.svg)](https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/releases) 	<span class="badge-paypal"><a href="https://www.paypal.me/MarcinMagnus" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-1?logo=paypal&color=blue.svg" alt="PayPal donate button" /></a></span>
 </br></br>
@@ -25,7 +25,7 @@ Table of contents:
   * [Tips](#tips)
   * [Development](#development)
   * [Troubleshooting](#troubleshooting)
-  
+
 [Pocket](https://getpocket.com/), previously known as Read It Later, is an application and service for managing a reading list of articles from the Internet. The application allows the user to save an article or web page to the cloud for later reading. The article is then sent to the user's Pocket list (synced to all of their devices) for offline reading. Pocket removes clutter from articles and allows the user to adjust text settings for easier reading [Source](https://en.wikipedia.org/wiki/Pocket_%28application%29).
 
 [Calibre](http://calibre-ebook.com/) is a free and open source e-book library management application developed by users of e-books for users of e-books. The programs also allows users to create own e-books and syncing with a variaty of e-book readers (e.g. Kindle, that's how I got the screenshots below) [Source](https://en.wikipedia.org/wiki/Calibre_%28software%29). Calibre has a plugin management system and ..
@@ -57,7 +57,7 @@ This is a fork of the original 2011 Calibre ReadItLater plugin.
 If you want to use the sections by domain functionality, you have to
 
 * active the SECTIONS_BY_DOMAIN flag
-* uncomment the tld import. For more details, check https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/pull/31 
+* uncomment the tld import. For more details, check https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/pull/31
 
 # Settings
 
@@ -82,34 +82,34 @@ and edit the Python code.
         tag configuration (that is: TAGS, TAGS_EXCEPTIONS, INCLUDE_UNTAGGED). This is because the recipe ignores duplicated
         articles, and therefore an article can't appear under a "real" (pocket) tag and under the fake tag with its domain.
 
-**SECTIONS_BY_DOMAIN_USING_TLD** you can install TLD and use it to get domains, but this requires installed library in 
+**SECTIONS_BY_DOMAIN_USING_TLD** you can install TLD and use it to get domains, but this requires installed library in
         a way that Calibre will see it (I had a huge problem to get this running @mmagnus), so there is a new
         way to get domain based on parsing URL, less sophisticated but more reliable (in my opinion @mmagnus)
 
 **INCLUDE_UNTAGGED** (True or False) if True then put all fetched and untagged articles in the last section 'Untagged'.
         If False then skip these articles and don't create the section 'Untagged'. Bear in mind that if TAGS is populated ( e.g. TAGS = ['tag1', 'tag2']),
-        INCLUDE_UNTAGED = True and other tags exist in Pokcet (e.g. tag3,tag4) then the Untagged section will include untagged articles 
+        INCLUDE_UNTAGED = True and other tags exist in Pokcet (e.g. tag3,tag4) then the Untagged section will include untagged articles
         in Pocket AND articles tagged with tag3 and tag4. That behavior can be avoided using TAGS_EXCEPTION
 
-**ARCHIVE_DOWNLOADED** (True or False) do you want to archive articles after fetching 
+**ARCHIVE_DOWNLOADED** (True or False) do you want to archive articles after fetching
 
-**MAX_ARTICLES_PER_FEED** (number) how many articles do you want to fetch for FEED (FEED could be also 
+**MAX_ARTICLES_PER_FEED** (number) how many articles do you want to fetch for FEED (FEED could be also
 considered as TAG, so for each TAG you this value will be applied.
 
 **SORT_METHOD** ('oldest' or 'newest') way how the articles are sorted
 
-**OLDEST_ARTICLE** (number) fetch articles added (modified) in Pocket for number of days, 7 will give you articles added/modified in Pocket for the last week 
- 
+**OLDEST_ARTICLE** (number) fetch articles added (modified) in Pocket for number of days, 7 will give you articles added/modified in Pocket for the last week
+
 **TO_PULL** ('all' or 'unread') What articles to pull? unread only or all?
 
 **TITLE_WITH_TAGS** (True or False) if True will the ebook filename will be like
         Pocket: INVEST P2P [Sun, 05 Jan 2020] for many tags this might be to long, if you make a single tag ebook this might be super fun!
 
 **ALLOW_DUPLICATES** (True or False) if True articles that have multiple tags matching those defined in TAGS are duplicated in each matched tag
-        Eg.: TAGS = ['tag1','tag2'] then article1 that has both tags will appear in both sections tag1 and tag2. 
+        Eg.: TAGS = ['tag1','tag2'] then article1 that has both tags will appear in both sections tag1 and tag2.
 
 # Installation
-  
+
 * Download files https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/archive/master.zip
 * Go to Calibre, under the "Fetch News" drop down select "Add or edit a custom news source"
 * Click "Load Recipe From File" and choose the Pocket.recipe file
@@ -140,7 +140,7 @@ https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/releases
 * 170503 Decide what to pull (all vs unread)
 * 170502 `Pocket + [Mon, 05 Dec 2016]`
 * 160817 Add links to articles
-* 160205 Modified version of the plugin to get (1) The latest (more or less as the original version of the plugin) (2) and your content organized by tags! 
+* 160205 Modified version of the plugin to get (1) The latest (more or less as the original version of the plugin) (2) and your content organized by tags!
 
 # Tips
 
