@@ -84,29 +84,27 @@ if USE_GLOBAL_CONFIG:
     except:  # FileNotFoundError: noooot perfect!
         pass
 #############################################################################
-from calibre.constants import config_dir
-from calibre.utils.config import JSONConfig
-from calibre.web.feeds.news import BasicNewsRecipe
-from collections import namedtuple
-from os import path
-from time import localtime, strftime, time
-
-#############################################################################
-import sys
-
-SITE_PACKAGE_PATH = ""
-if SECTIONS_BY_DOMAIN:
-    from urllib.parse import urlparse
-
 import errno
 import json
-import mechanize
-import operator
+import sys
+from os import path
+from time import strftime, time
 
 try:
     from urllib.error import HTTPError
 except ImportError:
     from urllib2 import HTTPError
+
+SITE_PACKAGE_PATH = ""
+if SECTIONS_BY_DOMAIN:
+    from urllib.parse import urlparse
+
+import mechanize
+
+#############################################################################
+from calibre.constants import config_dir
+from calibre.utils.config import JSONConfig
+from calibre.web.feeds.news import BasicNewsRecipe
 
 __license__ = "GPL v3"
 __copyright__ = "2019, David Orchard"
