@@ -54,10 +54,7 @@ This is a fork of the original 2011 Calibre ReadItLater plugin.
 
 # Sections by domain
 
-If you want to use the sections by domain functionality, you have to
-
-* active the SECTIONS_BY_DOMAIN flag
-* uncomment the tld import. For more details, check https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/pull/31
+If you want to use the sections by domain functionality, you have to enable the SECTIONS_BY_DOMAIN flag.
 
 # Settings
 
@@ -69,22 +66,20 @@ and edit the Python code.
 
 ![](doc/settings.png)
 
-**TAGS** (list of strings or empty list: []) if [] (empty list) then the plugin will connect Pocket and fetch articles based on the configuration of the plugin.
+**TAGS** (list of strings or empty list: []) if empty then the plugin will connect to Pocket and fetch articles based on the configuration of the plugin.
         Next, the plugin will get tags of these articles and group them into sections in the final ebook.
         If TAGS has elements, e.g., TAGS = ['tag1', 'tag2'] then only these tags will be fetched from Pocket.
 
 **TAGS_EXCEPTIONS** (list of strings or empty list: []) if [] (empty list) then the plugin will ignore it.
-        If TAGS_EXCEPTIONS has elements, e.g., TAGS_EXCEPTIONS = ['tag3', 'tag4'] then the articles tagged with this tags will be ignored.
-        That is, tag3 and tag4 won't appear as sections, and it's articles won't appear in the  "Untagged" section.
-        This variable is meant to be used with TAGS = [], as it doesn’t make any sense to specify a tag both in TAGS and in TAGS_EXCEPTIONS.
+        If TAGS_EXCEPTIONS has elements, e.g., TAGS_EXCEPTIONS = ['tag3', 'tag4'] then the articles tagged with these tags will be ignored.
+        That is, tag3 and tag4 won't appear as sections, and their articles won't appear in the "Untagged" section.
+        This variable is meant to be used with TAGS = [], as it doesn't make any sense to specify a tag both in TAGS and in TAGS_EXCEPTIONS.
 
-**SECTIONS_BY_DOMAIN** If activated, the articles will be grouped by first level domain. This will override any
+**URL_KEYWORD_EXCEPTIONS** (list of keywords such as, if the URL of the article contains any keyword, then the plugin will ignore the article)
+
+**SECTIONS_BY_DOMAIN** (True or False) If True, the articles will be grouped by first level domain. This will override any
         tag configuration (that is: TAGS, TAGS_EXCEPTIONS, INCLUDE_UNTAGGED). This is because the recipe ignores duplicated
-        articles, and therefore an article can't appear under a "real" (pocket) tag and under the fake tag with its domain.
-
-**SECTIONS_BY_DOMAIN_USING_TLD** you can install TLD and use it to get domains, but this requires installed library in
-        a way that Calibre will see it (I had a huge problem to get this running @mmagnus), so there is a new
-        way to get domain based on parsing URL, less sophisticated but more reliable (in my opinion @mmagnus)
+        articles, and therefore an article can't appear under a "real" (Pocket) tag and under the fake tag with its domain.
 
 **INCLUDE_UNTAGGED** (True or False) if True then put all fetched and untagged articles in the last section 'Untagged'.
         If False then skip these articles and don't create the section 'Untagged'. Bear in mind that if TAGS is populated ( e.g. TAGS = ['tag1', 'tag2']),
@@ -94,16 +89,13 @@ and edit the Python code.
 **ARCHIVE_DOWNLOADED** (True or False) do you want to archive articles after fetching
 
 **MAX_ARTICLES_PER_FEED** (number) how many articles do you want to fetch for FEED (FEED could be also
-considered as TAG, so for each TAG you this value will be applied.
+        considered as TAG, so for each TAG you this value will be applied.
 
 **SORT_METHOD** ('oldest' or 'newest') way how the articles are sorted
 
 **OLDEST_ARTICLE** (number) fetch articles added (modified) in Pocket for number of days, 7 will give you articles added/modified in Pocket for the last week
 
 **TO_PULL** ('all' or 'unread') What articles to pull? unread only or all?
-
-**TITLE_WITH_TAGS** (True or False) if True will the ebook filename will be like
-        Pocket: INVEST P2P [Sun, 05 Jan 2020] for many tags this might be to long, if you make a single tag ebook this might be super fun!
 
 **ALLOW_DUPLICATES** (True or False) if True articles that have multiple tags matching those defined in TAGS are duplicated in each matched tag
         Eg.: TAGS = ['tag1','tag2'] then article1 that has both tags will appear in both sections tag1 and tag2.
@@ -114,14 +106,14 @@ considered as TAG, so for each TAG you this value will be applied.
 * Go to Calibre, under the "Fetch News" drop down select "Add or edit a custom news source"
 * Click "Load Recipe From File" and choose the Pocket.recipe file
 * Edit the settings in the windows that will pop up, for example, set up tags (See Settings), click Save, then Close
-* Click "Fetch News", the Custom you will find Pocket, change "Schedule for download" if you want
-* Click "Download Now" to download now if you want.
+* Click "Fetch News", then Custom you will find Pocket, change "Schedule for download" if you want
+* Click "Download Now" to download now if you want
 * You will be asked to grant access to your Plugin, click on "here" (to be able to click you have to close "Schedule news download" by clicking "OK" or "Cancel" first)
 
 ![](doc/grant.png)
 (if the window disappears, it might be behind the main window of Calibre)
 
-* When the access is granted, simply click of "Fetch News" again to start!
+* When the access is granted, simply click "Fetch News" again to start!
 
 If you have any problem read more [at Pocket](https://help.getpocket.com/customer/portal/articles/361724-how-to-configure-calibre-with-pocket)
 
@@ -131,6 +123,9 @@ Report any issues here: https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/is
 
 https://github.com/mmagnus/Pocket-Plus-Calibre-Plugin/releases
 
+* yymmdd [v2.7.5] Remove SECTIONS_BY_DOMAIN_USING_TLD sections functionality that relies on external 'tld' library. Remove
+  remnants of TITLE_WITH_TAGS functionality. Modernize code.
+* 211024 [v2.7.4] Fix #46 KeyError: u'resolved_title'
 * 210731 [v2.7.3] Replace tld with standard Python way (not as good as tld but works without extra package) if SECTIONS_BY_DOMAIN_USING_TLD = False
 * 201122 [v2.6.3] With fix from @AkashPatel95 #26
 * 200515 [v2.4.0] Auto tags! Automatically group articles into Sections based on Pocket's tags.
