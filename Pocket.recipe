@@ -68,7 +68,6 @@ OLDEST_ARTICLE = 365
 SORT_METHOD = "newest"
 SORT_WITHIN_TAG_BY_TITLE = False
 TO_PULL = "unread"
-TITLE_WITH_TAGS = False
 ALLOW_DUPLICATES = True
 USE_GLOBAL_CONFIG = False
 # NO NEED TO MODIFY ANYTHING BELOW THIS LINE
@@ -208,11 +207,6 @@ class Pocket(BasicNewsRecipe):
 
     extra_css = ".touchscreen_navbar { display: none; }"
     extra_css = ".calibre_navbar { visibility: hidden; }"
-    # TITLE_WITH_TAGS
-    tags_title = " "
-    if tagsList:
-        if tagsList[-1] != "" and TITLE_WITH_TAGS:  # ugly hack
-            tags_title = ":" + " ".join(tagsList).upper() + " "
 
     def pocket_api_request(self, endpoint, request_dict):
         req_dict = {"consumer_key": self.consumer_key}
