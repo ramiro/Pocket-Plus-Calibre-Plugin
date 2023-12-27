@@ -210,7 +210,7 @@ class Pocket(BasicNewsRecipe):
             self.base_url + endpoint,
             json.dumps(req_dict),
             headers={
-                "Content-Type": "application/json; charset=UTF8",
+                "Content-Type": "application/json; charset=utf-8",
                 "X-Accept": "application/json",
             },
         )
