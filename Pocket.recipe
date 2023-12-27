@@ -85,7 +85,7 @@ import errno
 import json
 import sys
 from os import path
-from time import strftime, time
+from time import sleep, strftime, time
 from urllib.parse import urlparse
 
 try:
@@ -203,7 +203,7 @@ class Pocket(BasicNewsRecipe):
     extra_css = ".touchscreen_navbar { display: none; }"
     extra_css = ".calibre_navbar { visibility: hidden; }"
 
-    def pocket_api_request(self, endpoint, request_dict):
+    def build_api_request(self, endpoint, request_dict):
         req_dict = {"consumer_key": self.consumer_key}
         req_dict.update(request_dict)
         return mechanize.Request(
@@ -215,11 +215,27 @@ class Pocket(BasicNewsRecipe):
             },
         )
 
+    def post_api_request(self, request):
+        retries = 2
+        backoff_factor = 2
+        for attempt in range(retries + 1):
+            try:
+                return self.browser.open(request)
+            except HTTPError as e:
+                if e.code == 500:
+                    if attempt == retries:
+                        raise  # Alas, :(
+                    else:
+                        delay = backoff_factor * (2**attempt)
+                        sleep(delay)
+                else:
+                    raise
+
     def first_run(self):
-        request = self.pocket_api_request(
+        request = self.build_api_request(
             "/v3/oauth/request", {"redirect_uri": self.redirect_uri}
         )
-        response = self.browser.open(request)
+        response = self.post_api_request(request)
         response = json.load(response)
         self.config = PocketConfig(
             state=PocketConfig.AuthState.Authorizing, token=response["code"]
@@ -230,11 +246,11 @@ class Pocket(BasicNewsRecipe):
             self.config.state == PocketConfig.AuthState.Authorizing
         ), "Authorization process not yet begun"
         assert self.config.token, "No request token"
-        request = self.pocket_api_request(
+        request = self.build_api_request(
             "/v3/oauth/authorize", {"code": self.config.token}
         )
         try:
-            response = self.browser.open(request)
+            response = self.post_api_request(request)
             response = json.load(response)
             self.config = PocketConfig(
                 state=PocketConfig.AuthState.Authorized,
@@ -261,7 +277,7 @@ class Pocket(BasicNewsRecipe):
         ############ GET ALL ITEMS #############
         # get every item and iterate them. Build the section_dict
         # with tags or domains as keys, depending on SECTIONS_BY_DOMAIN
-        request = self.pocket_api_request(
+        request = self.build_api_request(
             "/v3/get",
             {
                 "access_token": self.config.token,
@@ -274,7 +290,7 @@ class Pocket(BasicNewsRecipe):
         )
 
         try:
-            response = self.browser.open(request)
+            response = self.post_api_request(request)
             response = json.load(response)
         except HTTPError as e:
             if e.code == 401:
@@ -420,7 +436,7 @@ class Pocket(BasicNewsRecipe):
             return
 
         archived_time = int(time())
-        request = self.pocket_api_request(
+        request = self.build_api_request(
             "/v3/send",
             {
                 "access_token": self.config.token,
@@ -434,7 +450,7 @@ class Pocket(BasicNewsRecipe):
                 ],
             },
         )
-        response = self.browser.open(request)
+        response = self.post_api_request(request)
 
     def cleanup(self):
         # If we're in another state, then downloading didn't complete
