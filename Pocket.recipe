@@ -70,9 +70,9 @@ TO_PULL = "unread"
 TITLE_WITH_TAGS = False
 ALLOW_DUPLICATES = True
 USE_GLOBAL_CONFIG = False
-# ADV CONFIGURATION #########################################################
-SITE_PACKAGE_PATH = ""
+# NO NEED TO MODIFY ANYTHING BELOW THIS LINE
 #############################################################################
+
 # code for configuration set in your home folder
 if USE_GLOBAL_CONFIG:
     import os
@@ -83,27 +83,23 @@ if USE_GLOBAL_CONFIG:
         exec(open(user_path + "/.pocket.py").read())  # python3
     except:  # FileNotFoundError: noooot perfect!
         pass
-#############################################################################
+
+import collections
 import errno
 import json
 import sys
 from os import path
 from time import strftime, time
+from urllib.parse import urlparse
 
 try:
     from urllib.error import HTTPError
 except ImportError:
     from urllib2 import HTTPError
 
-SITE_PACKAGE_PATH = ""
-if SECTIONS_BY_DOMAIN:
-    from urllib.parse import urlparse
-
 import mechanize
 
-#############################################################################
 from calibre.constants import config_dir
-from calibre.utils.config import JSONConfig
 from calibre.web.feeds.news import BasicNewsRecipe
 
 __license__ = "GPL v3"
@@ -137,7 +133,7 @@ class PocketConfig:
 
             if isinstance(config, dict):
                 for key in self.__dict__.keys():
-                    if config[key]:
+                    if config.get(key):
                         setattr(self, key, config[key])
         except IOError as e:
             # File not found
@@ -196,19 +192,19 @@ class Pocket(BasicNewsRecipe):
     no_stylesheets = True
     use_embedded_content = False
     if ALLOW_DUPLICATES:
-        ignore_duplicate_articles = {}
+        ignore_duplicate_articles = None
     else:
         ignore_duplicate_articles = {"url"}
 
     # Custom developer settings
     consumer_key = "87006-2ecad30a91903f54baf0ee05"
     redirect_uri = "https://calibre-ebook.com/"
-    base_url = "https://app.getpocket.com"
+    base_url = "https://getpocket.com"
     to_archive = []
 
     simultaneous_downloads = 10
 
-    extra_css = ".touchscreen_navbar {display: none;}"
+    extra_css = ".touchscreen_navbar { display: none; }"
     extra_css = ".calibre_navbar { visibility: hidden; }"
     # TITLE_WITH_TAGS
     tags_title = " "
@@ -216,16 +212,21 @@ class Pocket(BasicNewsRecipe):
         if tagsList[-1] != "" and TITLE_WITH_TAGS:  # ugly hack
             tags_title = ":" + " ".join(tagsList).upper() + " "
 
-    def first_run(self):
-        request = mechanize.Request(
-            "https://getpocket.com/v3/oauth/request",
-            ("{{" '"consumer_key":"{0}",' '"redirect_uri":"{1}"' "}}").format(
-                self.consumer_key, self.redirect_uri
-            ),
+    def pocket_api_request(self, endpoint, request_dict):
+        req_dict = {"consumer_key": self.consumer_key}
+        req_dict.update(request_dict)
+        return mechanize.Request(
+            self.base_url + endpoint,
+            json.dumps(req_dict),
             headers={
                 "Content-Type": "application/json; charset=UTF8",
                 "X-Accept": "application/json",
             },
+        )
+
+    def first_run(self):
+        request = self.pocket_api_request(
+            "/v3/oauth/request", {"redirect_uri": self.redirect_uri}
         )
         response = self.browser.open(request)
         response = json.load(response)
@@ -238,15 +239,8 @@ class Pocket(BasicNewsRecipe):
             self.config.state == PocketConfig.AuthState.Authorizing
         ), "Authorization process not yet begun"
         assert self.config.token, "No request token"
-        request = mechanize.Request(
-            "https://getpocket.com/v3/oauth/authorize",
-            ("{{" '"consumer_key":"{0}",' '"code":"{1}"' "}}").format(
-                self.consumer_key, self.config.token
-            ),
-            headers={
-                "Content-Type": "application/json; charset=UTF8",
-                "X-Accept": "application/json",
-            },
+        request = self.pocket_api_request(
+            "/v3/oauth/authorize", {"code": self.config.token}
         )
         try:
             response = self.browser.open(request)
@@ -269,35 +263,22 @@ class Pocket(BasicNewsRecipe):
         assert self.config.token, "No access token"
 
         articles = []
-        section_dict = {}  # dictionary with the sections and its articles. the sections
+        # dictionary with the sections and its articles. the sections
         # cant be domains or tags depending on SECTIONS_BY_DOMAIN
+        section_dict = collections.defaultdict(list)
 
         ############ GET ALL ITEMS #############
         # get every item and iterate them. Build the section_dict
         # with tags or domains as keys, depending on SECTIONS_BY_DOMAIN
-        request = mechanize.Request(
-            "https://getpocket.com/v3/get",
-            (
-                "{{"
-                '"consumer_key":"{0}",'
-                '"access_token":"{1}",'
-                '"count":"{2}",'
-                '"since":"{3}",'
-                '"state":"{5}",'
-                '"detailType":"complete",'
-                '"sort":"{4}"'
-                "}}"
-            ).format(
-                self.consumer_key,
-                self.config.token,
-                self.max_articles * 1000,  # something "unlimited"
-                int(time()) - 86400 * self.oldest_article,
-                self.sort_method,
-                self.to_pull,
-            ),
-            headers={
-                "Content-Type": "application/json; charset=UTF8",
-                "X-Accept": "application/json",
+        request = self.pocket_api_request(
+            "/v3/get",
+            {
+                "access_token": self.config.token,
+                "count": self.max_articles * 1000,  # something "unlimited"
+                "since": int(time()) - 86400 * self.oldest_article,
+                "state": self.to_pull,
+                "detailType": "complete",
+                "sort": self.sort_method,
             },
         )
 
@@ -308,73 +289,61 @@ class Pocket(BasicNewsRecipe):
             if e.code == 401:
                 # Calibre access has been removed
                 self.reauthorize()
-                raise e
+            raise e
 
         if not response["list"]:
             self.abort_recipe_processing(
                 'No unread articles in the Pocket account "{}"'.format(self.config.user)
             )
         else:
-            for item in dict(response["list"]):
-                if response["list"][item]["status"] == "2":
-                    del response["list"][item]
+            for item_id, item in response["list"]:
+                if item["status"] == "2":  # status 2 is Should be deleted
+                    del response["list"][item_id]
                 # If the URL contains any URL_KEYWORD_EXCEPTIONS, ignore article
                 elif any(
-                    pattern in response["list"][item]["given_url"]
+                    pattern in item["given_url"]
                     for pattern in URL_KEYWORD_EXCEPTIONS
                 ):
-                    print(
-                        "Ignoring article due to keyword patterns:"
-                        + response["list"][item]["given_url"]
-                    )
-                    del response["list"][item]
+                    print("Ignoring article due to keyword patterns: {}".format(item["given_url"]))
+                    del response["list"][item_id]
                 elif SECTIONS_BY_DOMAIN:
                     # the keys of section_dict will be domains
                     # Extract domain from the URL
-                    domain = urlparse(
-                        response["list"][item]["resolved_url"]
-                    ).netloc.replace("www.", "")
+                    domain = urlparse(item["resolved_url"]).netloc.replace("www.", "")
 
-                    url = response["list"][item]["resolved_url"]
+                    url = item["resolved_url"]
                     print(">> url", url, file=sys.stderr)
                     print(">>> domain", domain, file=sys.stderr)
 
-                    # Add the article under its domain
-                    if domain not in section_dict:
-                        section_dict[domain] = [item]
-                    else:
-                        section_dict[domain].append(item)
+                    # Add the article ID under its domain
+                    section_dict[domain].append(item_id)
                 else:
                     # the keys of section_dict will be tags
                     try:
-                        tag = list(response["list"][item]["tags"].keys())
+                        tags = list(item["tags"].keys())
                     except KeyError:
                         if INCLUDE_UNTAGGED:
-                            tag = ["Untagged"]
+                            tags = ["Untagged"]
                         else:
-                            tag = None
+                            tags = None
 
-                    # tag could be None if article untagged and INCLUDE_UNTAGGED=False
-                    if tag and not any(tagcheck in TAGS_EXCEPTIONS for tagcheck in tag):
-                        if len(TAGS) == 0:
+                    # tags could be None if article untagged and INCLUDE_UNTAGGED=False
+                    if tags and not any(
+                        tag in TAGS_EXCEPTIONS for tag in tags
+                    ):
+                        if not TAGS:
                             # autotags enabled, insert tag and item
-                            for tagcheck in tag:
-                                if tagcheck not in section_dict:
-                                    section_dict[tagcheck] = [item]
-                                else:
-                                    section_dict[tagcheck].append(item)
+                            for tag in tags:
+                                section_dict[tag].append(item_id)
                         else:
-                            # explicit tags, check that
-                            # the tag belongs to the explicit array TAGS
-                            # OR is is an untagged article and INCLUDE_UNTAGGED=True
-                            for tagcheck in tag:
-                                if tagcheck in TAGS or (
-                                    tagcheck == "Untagged" and INCLUDE_UNTAGGED
+                            # explicit tags, check that the tag belongs to the explicit
+                            # array TAGS OR is is an untagged article and
+                            # INCLUDE_UNTAGGED=True
+                            for tag in tags:
+                                if tag in TAGS or (
+                                    tag == "Untagged" and INCLUDE_UNTAGGED
                                 ):
-                                    if tagcheck not in section_dict:
-                                        section_dict[tagcheck] = [item]
-                                    else:
-                                        section_dict[tagcheck].append(item)
+                                    section_dict[tag].append(item_id)
 
             ############ APPEND ARTS FOR EACH TAG/DOMAIN #############
             # At this point the section_dict is completed, either with
@@ -382,7 +351,7 @@ class Pocket(BasicNewsRecipe):
 
             for section in section_dict:
                 arts = []
-                for item in section_dict.get(section):
+                for item in section_dict[section]:
                     try:
                         title = response["list"][item]["resolved_title"]
                     except KeyError:
@@ -418,8 +387,9 @@ class Pocket(BasicNewsRecipe):
 
             if not articles:
                 self.abort_recipe_processing(
-                    "No articles in the Pocket account %s to download"
-                    % (self.config.user)
+                    "No articles in the Pocket account {} to download".format(
+                        self.config.user
+                    )
                 )  # , ' '.join(self.tags))) \n[tags: %s]
             return articles
 
@@ -428,7 +398,7 @@ class Pocket(BasicNewsRecipe):
         self.ensure_authorization()
 
     def ensure_authorization(self):
-        if self.config.state is PocketConfig.AuthState.FirstRun:
+        if self.config.state == PocketConfig.AuthState.FirstRun:
             self.first_run()
             self.config.save()
             self.abort_recipe_processing(
@@ -440,12 +410,12 @@ class Pocket(BasicNewsRecipe):
                     self.config.token, self.redirect_uri
                 )
             )
-        elif self.config.state is PocketConfig.AuthState.Authorizing:
+        elif self.config.state == PocketConfig.AuthState.Authorizing:
             self.authorize()
             self.config.save()
 
     def get_browser(self, *args, **kwargs):
-        self.browser = BasicNewsRecipe.get_browser(self)
+        self.browser = super().get_browser()
         self.ensure_authorization()
         return self.browser
 
@@ -459,31 +429,18 @@ class Pocket(BasicNewsRecipe):
             return
 
         archived_time = int(time())
-        request = mechanize.Request(
-            "https://getpocket.com/v3/send",
-            (
-                "{{"
-                '"consumer_key":"{0}",'
-                '"access_token":"{1}",'
-                '"actions":{2}'
-                "}}"
-            ).format(
-                self.consumer_key,
-                self.config.token,
-                json.dumps(
-                    [
-                        {
-                            "action": "archive",
-                            "item_id": item_id,
-                            "time": archived_time,
-                        }
-                        for item_id in self.to_archive
-                    ]
-                ),
-            ),
-            headers={
-                "Content-Type": "application/json; charset=UTF8",
-                "X-Accept": "application/json",
+        request = self.pocket_api_request(
+            "/v3/send",
+            {
+                "access_token": self.config.token,
+                "actions": [
+                    {
+                        "action": "archive",
+                        "item_id": item_id,
+                        "time": archived_time,
+                    }
+                    for item_id in self.to_archive
+                ],
             },
         )
         response = self.browser.open(request)
