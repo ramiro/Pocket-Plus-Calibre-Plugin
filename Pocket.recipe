@@ -15,22 +15,22 @@ __version__ = "2.7.4"
 2.6.3: With fix from @AkashPatel95 #26 201122
 2.6.2: Fix. Add also removal of H1 to clean up all titles, to insert a new one
 
-**TAGS** (list of strings or empty list: []) if [] (empty list) then the plugin will connect Pocket and fetch articles based on the configuration of the plugin.
+**TAGS** (list of strings or empty list: []) if empty then the plugin will connect to Pocket and fetch articles based on the configuration of the plugin.
         Next, the plugin will get tags of these articles and group them into sections in the final ebook.
         If TAGS has elements, e.g., TAGS = ['tag1', 'tag2'] then only these tags will be fetched from Pocket.
 
 **TAGS_EXCEPTIONS** (list of strings or empty list: []) if [] (empty list) then the plugin will ignore it.
-        If TAGS_EXCEPTIONS has elements, e.g., TAGS_EXCEPTIONS = ['tag3', 'tag4'] then the articles tagged with this tags will be ignored.
-        That is, tag3 and tag4 won't appear as sections, and it's articles won't appear in the  "Untagged" section.
-        This variable is meant to be used with TAGS = [], as it doesn’t make any sense to specify a tag both in TAGS and in TAGS_EXCEPTIONS.
+        If TAGS_EXCEPTIONS has elements, e.g., TAGS_EXCEPTIONS = ['tag3', 'tag4'] then the articles tagged with these tags will be ignored.
+        That is, tag3 and tag4 won't appear as sections, and their articles won't appear in the "Untagged" section.
+        This variable is meant to be used with TAGS = [], as it doesn't make any sense to specify a tag both in TAGS and in TAGS_EXCEPTIONS.
 
 **URL_KEYWORD_EXCEPTIONS** (list of keywords such as, if the URL of the article contains any keyword, then the plugin will ignore the article)
 
-**SECTIONS_BY_DOMAIN** If activated, the articles will be grouped by first level domain. This will override any
+**SECTIONS_BY_DOMAIN** (True or False) If True, the articles will be grouped by first level domain. This will override any
         tag configuration (that is: TAGS, TAGS_EXCEPTIONS, INCLUDE_UNTAGGED). This is because the recipe ignores duplicated
-        articles, and therefore an article can't appear under a "real" (pocket) tag and under the fake tag with its domain.
+        articles, and therefore an article can't appear under a "real" (Pocket) tag and under the fake tag with its domain.
 
-**SECTIONS_BY_DOMAIN_USING_TLD** you can install TLD and use it to get domains, but this requires installed library in
+**SECTIONS_BY_DOMAIN_USING_TLD** (NOT IMPLEMENTED) you can install TLD and use it to get domains, but this requires installed library in
         a way that Calibre will see it (I had a huge problem to get this running @mmagnus), so there is a new
         way to get domain based on parsing URL, less sophisticated but more reliable (in my opinion @mmagnus)
 
@@ -50,7 +50,7 @@ considered as TAG, so for each TAG you this value will be applied.
 
 **TO_PULL** ('all' or 'unread') What articles to pull? unread only or all?
 
-**TITLE_WITH_TAGS** (True or False) if True will the ebook filename will be like
+**TITLE_WITH_TAGS** (True or False -- NOT IMPLEMENTED) if True will the ebook filename will be like
         Pocket: INVEST P2P [Sun, 05 Jan 2020] for many tags this might be to long, if you make a single tag ebook this might be super fun!
 
 **ALLOW_DUPLICATES** (True or False) if True articles that have multiple tags matching those defined in TAGS are duplicated in each matched tag
@@ -324,7 +324,7 @@ class Pocket(BasicNewsRecipe):
                     try:
                         tags = list(item["tags"].keys())
                     except KeyError:
-                        if INCLUDE_UNTAGGED:
+                        if self.include_untagged:
                             tags = ["Untagged"]
                         else:
                             tags = None
@@ -343,7 +343,7 @@ class Pocket(BasicNewsRecipe):
                             # INCLUDE_UNTAGGED=True
                             for tagcheck in tags:
                                 if tagcheck in TAGS or (
-                                    tagcheck == "Untagged" and INCLUDE_UNTAGGED
+                                    tagcheck == "Untagged" and self.include_untagged
                                 ):
                                     section_dict[tagcheck].append(item_id)
 
