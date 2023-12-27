@@ -2,9 +2,11 @@
 # vim:ft=python tabstop=8 expandtab shiftwidth=4 softtabstop=4
 from __future__ import print_function
 
-__version__ = "2.7.4"
+__version__ = "2.7.5"
 
 """
+2.7.5: Remove SECTIONS_BY_DOMAIN_USING_TLD sections functionality that relies on external 'tld' library. Remove
+       remnants of TITLE_WITH_TAGS functionality. Modernize code.
 2.7.4: Fix #46 KeyError: u'resolved_title'
 2.7.3: Replace tld with standard Python way (not as good as tld but works without extra package) if SECTIONS_BY_DOMAIN_USING_TLD = False
 2.7.2: Change default MAX_ARTICLES_PER_FEED to 30
@@ -30,10 +32,6 @@ __version__ = "2.7.4"
         tag configuration (that is: TAGS, TAGS_EXCEPTIONS, INCLUDE_UNTAGGED). This is because the recipe ignores duplicated
         articles, and therefore an article can't appear under a "real" (Pocket) tag and under the fake tag with its domain.
 
-**SECTIONS_BY_DOMAIN_USING_TLD** (NOT IMPLEMENTED) you can install TLD and use it to get domains, but this requires installed library in
-        a way that Calibre will see it (I had a huge problem to get this running @mmagnus), so there is a new
-        way to get domain based on parsing URL, less sophisticated but more reliable (in my opinion @mmagnus)
-
 **INCLUDE_UNTAGGED** (True or False) if True then put all fetched and untagged articles in the last section 'Untagged'.
         If False then skip these articles and don't create the section 'Untagged'. Bear in mind that if TAGS is populated ( e.g. TAGS = ['tag1', 'tag2']),
         INCLUDE_UNTAGED = True and other tags exist in Pokcet (e.g. tag3,tag4) then the Untagged section will include untagged articles
@@ -42,16 +40,13 @@ __version__ = "2.7.4"
 **ARCHIVE_DOWNLOADED** (True or False) do you want to archive articles after fetching
 
 **MAX_ARTICLES_PER_FEED** (number) how many articles do you want to fetch for FEED (FEED could be also
-considered as TAG, so for each TAG you this value will be applied.
+        considered as TAG, so for each TAG you this value will be applied.
 
 **SORT_METHOD** ('oldest' or 'newest') way how the articles are sorted
 
 **OLDEST_ARTICLE** (number) fetch articles added (modified) in Pocket for number of days, 7 will give you articles added/modified in Pocket for the last week
 
 **TO_PULL** ('all' or 'unread') What articles to pull? unread only or all?
-
-**TITLE_WITH_TAGS** (True or False -- NOT IMPLEMENTED) if True will the ebook filename will be like
-        Pocket: INVEST P2P [Sun, 05 Jan 2020] for many tags this might be to long, if you make a single tag ebook this might be super fun!
 
 **ALLOW_DUPLICATES** (True or False) if True articles that have multiple tags matching those defined in TAGS are duplicated in each matched tag
         Eg.: TAGS = ['tag1','tag2'] then article1 that has both tags will appear in both sections tag1 and tag2.
