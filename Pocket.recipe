@@ -187,8 +187,8 @@ class Pocket(BasicNewsRecipe):
 
     simultaneous_downloads = 10
 
-    extra_css = ".touchscreen_navbar { display: none; }"
-    extra_css = ".calibre_navbar { visibility: hidden; }"
+    extra_css = """.touchscreen_navbar { display: none; }
+        .calibre_navbar { visibility: hidden; }"""
 
     def build_api_request(self, endpoint, request_dict):
         req_dict = {"consumer_key": self.consumer_key}
