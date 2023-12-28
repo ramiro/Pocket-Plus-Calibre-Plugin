@@ -292,15 +292,8 @@ class Pocket(BasicNewsRecipe):
                 'No unread articles in the Pocket account "{}"'.format(self.config.user)
             )
         else:
-            for item_id, item in response["list"]:
-                if item["status"] == "2":  # status 2 is Should be deleted
-                    del response["list"][item_id]
-                # If the URL contains any URL_KEYWORD_EXCEPTIONS, ignore article
-                elif any(
-                    pattern in item["given_url"]
-                    for pattern in URL_KEYWORD_EXCEPTIONS
-                ):
-                    print("Ignoring article due to keyword patterns: {}".format(item["given_url"]))
+            for item_id, item in response["list"].copy().items():
+                if self.should_skip_entry(item):
                     del response["list"][item_id]
                 elif SECTIONS_BY_DOMAIN:
                     # the keys of section_dict will be domains
@@ -388,6 +381,28 @@ class Pocket(BasicNewsRecipe):
                     )
                 )  # , ' '.join(self.tags))) \n[tags: %s]
             return articles
+
+    def should_skip_entry(self, entry_obj):
+        if entry_obj["status"] == "2":  # status 2 is Should be deleted
+            return True
+
+        # If the URL contains any URL_KEYWORD_EXCEPTIONS, ignore article
+        if any(pat in entry_obj["given_url"] for pat in URL_KEYWORD_EXCEPTIONS):
+            print(
+                "Ignoring article due to keyword patterns: {}".format(
+                    entry_obj["given_url"]
+                )
+            )
+            return True
+
+        # Basic heuristics to detect PDF saves
+        if entry_obj["is_article"] == "0" and (
+            entry_obj["given_url"].lower().endswith(".pdf")
+            or entry_obj["resolved_url"].lower().endswith(".pdf")
+        ):
+            return True
+
+        return False
 
     def reauthorize(self):
         self.config = PocketConfig()
