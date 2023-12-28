@@ -145,22 +145,16 @@ class Pocket(BasicNewsRecipe):
     config = PocketConfig.from_file()
 
     __author__ = "David Orchard"
-    description = """
-
-                Modified by Marcin Magnus.
-
-                Fetches articles saved with <a href="https://getpocket.com/">Pocket</a> and archives them.<br>
-        """ + (
-        """
+    description = """\
+        Modified by Marcin Magnus.
+        Fetches articles saved with <a href="https://getpocket.com/">Pocket</a> and archives them.<br>""" + (
+        """\
                 Click <a href="https://getpocket.com/connected_applications">here</a>
-                to disconnect Calibre from the Pocket account "{}".
-        """.format(
+                to disconnect Calibre from the Pocket account "{}".""".format(
             config.user
         )
         if config.user
-        else """
-                Run 'Fetch News' with this source scheduled to initiate authentication with Pocket.
-        """
+        else "Run 'Fetch News' with this source scheduled to initiate authentication with Pocket."
     )
     publisher = "Pocket.com"
     category = "info, custom, Pocket"
