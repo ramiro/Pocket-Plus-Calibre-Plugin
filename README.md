@@ -67,39 +67,64 @@ and edit the Python code.
 
 ![](doc/settings.png)
 
-**TAGS** (list of strings or empty list: []) if empty then the plugin will connect to Pocket and fetch articles based on the configuration of the plugin.
-        Next, the plugin will get tags of these articles and group them into sections in the final ebook.
-        If TAGS has elements, e.g., TAGS = ['tag1', 'tag2'] then only these tags will be fetched from Pocket.
+- **TAGS** (list of strings or empty list: `[]`)
 
-**TAGS_EXCEPTIONS** (list of strings or empty list: []) if [] (empty list) then the plugin will ignore it.
-        If TAGS_EXCEPTIONS has elements, e.g., TAGS_EXCEPTIONS = ['tag3', 'tag4'] then the articles tagged with these tags will be ignored.
-        That is, tag3 and tag4 won't appear as sections, and their articles won't appear in the "Untagged" section.
-        This variable is meant to be used with TAGS = [], as it doesn't make any sense to specify a tag both in TAGS and in TAGS_EXCEPTIONS.
+    If empty then the plugin will connect to Pocket and fetch articles based on
+    the configuration of the plugin. Next, the plugin will get tags of these
+    articles and group them into sections in the final ebook. If TAGS has
+    elements, e.g., `TAGS = ['tag1', 'tag2']` then only these tags will be
+    fetched from Pocket.
+- **TAGS_EXCEPTIONS** (list of strings or empty list: `[]`)
 
-**URL_KEYWORD_EXCEPTIONS** (list of keywords such as, if the URL of the article contains any keyword, then the plugin will ignore the article)
+    If `[]` (empty list) then the plugin will ignore it. If `TAGS_EXCEPTIONS`
+    has elements, e.g., `TAGS_EXCEPTIONS = ['tag3', 'tag4']` then the articles
+    tagged with these tags will be ignored. That is, *tag3* and *tag4* won't
+    appear as sections, and their articles won't appear in the *Untagged*
+    section. This variable is meant to be used with `TAGS = []`, as it doesn't
+    make any sense to specify a tag both in `TAGS` and in `TAGS_EXCEPTIONS`.
+- **URL_KEYWORD_EXCEPTIONS** (list of strings or empty list: `[]`)
 
-**SECTIONS_BY_DOMAIN** (True or False) If True, the articles will be grouped by first level domain. This will override any
-        tag configuration (that is: TAGS, TAGS_EXCEPTIONS, INCLUDE_UNTAGGED). This is because the recipe ignores duplicated
-        articles, and therefore an article can't appear under a "real" (Pocket) tag and under the fake tag with its domain.
+    List of keywords such as, if the URL of the article contains any keyword,
+    then the plugin will ignore the article.
+- **SECTIONS_BY_DOMAIN** (True or False)
 
-**INCLUDE_UNTAGGED** (True or False) if True then put all fetched and untagged articles in the last section 'Untagged'.
-        If False then skip these articles and don't create the section 'Untagged'. Bear in mind that if TAGS is populated ( e.g. TAGS = ['tag1', 'tag2']),
-        INCLUDE_UNTAGED = True and other tags exist in Pokcet (e.g. tag3,tag4) then the Untagged section will include untagged articles
-        in Pocket AND articles tagged with tag3 and tag4. That behavior can be avoided using TAGS_EXCEPTION
+    If True, the articles will be grouped by first level domain. This will
+    override any tag configuration (that is: `TAGS`, `TAGS_EXCEPTIONS`,
+    `INCLUDE_UNTAGGED`). This is because the recipe ignores duplicated
+    articles, and therefore an article can't appear under a "real" (Pocket) tag
+    and under the fake tag with its domain.
+- **INCLUDE_UNTAGGED** (True or False)
 
-**ARCHIVE_DOWNLOADED** (True or False) do you want to archive articles after fetching
+    If True then put all fetched and untagged articles in the last section
+    *Untagged*. If False then skip these articles and don't create the section
+    *Untagged*. Bear in mind that if `TAGS` is populated
+    (e.g. `TAGS = ['tag1', 'tag2']`), `INCLUDE_UNTAGED = True` and other tags
+    exist in Pocket (e.g. *tag3*, *tag4*) then the *Untagged* section will
+    include untagged articles in Pocket AND articles tagged with *tag3* and
+    *tag4*. That behavior can be avoided using `TAGS_EXCEPTION`.
+- **ARCHIVE_DOWNLOADED** (True or False)
 
-**MAX_ARTICLES_PER_FEED** (number) how many articles do you want to fetch for FEED (FEED could be also
-        considered as TAG, so for each TAG you this value will be applied.
+    Do you want the recipe to mark articles as archived in Pocket after
+    fetching them?
+- **MAX_ARTICLES_PER_FEED** (number)
 
-**SORT_METHOD** ('oldest' or 'newest') way how the articles are sorted
+    How many articles do you want to fetch for FEED (FEED could be also
+    considered as TAG, so for each TAG you this value will be applied.
+- **SORT_METHOD** (`'oldest'` or `'newest'`)
 
-**OLDEST_ARTICLE** (number) fetch articles added (modified) in Pocket for number of days, 7 will give you articles added/modified in Pocket for the last week
+    Way how the articles are sorted.
+- **OLDEST_ARTICLE** (number)
 
-**TO_PULL** ('all' or 'unread') What articles to pull? unread only or all?
+    Fetch articles added (modified) in Pocket for number of days, 7 will give
+    you articles added/modified in Pocket for the last week.
+- **TO_PULL** (`'all'` or `'unread'`)
 
-**ALLOW_DUPLICATES** (True or False) if True articles that have multiple tags matching those defined in TAGS are duplicated in each matched tag
-        Eg.: TAGS = ['tag1','tag2'] then article1 that has both tags will appear in both sections tag1 and tag2.
+    What articles to pull? unread only or all?
+- **ALLOW_DUPLICATES** (True or False)
+
+    If True articles that have multiple tags matching those defined in `TAGS`
+    are duplicated in each matched tag Eg.: `TAGS = ['tag1', 'tag2']` then
+    article1 that has both tags will appear in both sections *tag1* and *tag2*.
 
 # Installation
 
