@@ -17,11 +17,11 @@ __version__ = "2.7.5"
 2.6.3: With fix from @AkashPatel95 #26 201122
 2.6.2: Fix. Add also removal of H1 to clean up all titles, to insert a new one
 
-**TAGS** (list of strings or empty list: []) if empty then the plugin will connect to Pocket and fetch articles based on the configuration of the plugin.
+**TAGS** (list of strings or empty list: []) If empty then the plugin will connect to Pocket and fetch articles based on the configuration of the plugin.
         Next, the plugin will get tags of these articles and group them into sections in the final ebook.
         If TAGS has elements, e.g., TAGS = ['tag1', 'tag2'] then only these tags will be fetched from Pocket.
 
-**TAGS_EXCEPTIONS** (list of strings or empty list: []) if [] (empty list) then the plugin will ignore it.
+**TAGS_EXCEPTIONS** (list of strings or empty list: []) if [] (empty list) Then the plugin will ignore it.
         If TAGS_EXCEPTIONS has elements, e.g., TAGS_EXCEPTIONS = ['tag3', 'tag4'] then the articles tagged with these tags will be ignored.
         That is, tag3 and tag4 won't appear as sections, and their articles won't appear in the "Untagged" section.
         This variable is meant to be used with TAGS = [], as it doesn't make any sense to specify a tag both in TAGS and in TAGS_EXCEPTIONS.
@@ -32,22 +32,22 @@ __version__ = "2.7.5"
         tag configuration (that is: TAGS, TAGS_EXCEPTIONS, INCLUDE_UNTAGGED). This is because the recipe ignores duplicated
         articles, and therefore an article can't appear under a "real" (Pocket) tag and under the fake tag with its domain.
 
-**INCLUDE_UNTAGGED** (True or False) if True then put all fetched and untagged articles in the last section 'Untagged'.
+**INCLUDE_UNTAGGED** (True or False) If True then put all fetched and untagged articles in the last section 'Untagged'.
         If False then skip these articles and don't create the section 'Untagged'. Bear in mind that if TAGS is populated ( e.g. TAGS = ['tag1', 'tag2']),
-        INCLUDE_UNTAGED = True and other tags exist in Pokcet (e.g. tag3,tag4) then the Untagged section will include untagged articles
+        INCLUDE_UNTAGED = True and other tags exist in Pocket (e.g. tag3,tag4) then the Untagged section will include untagged articles
         in Pocket AND articles tagged with tag3 and tag4. That behavior can be avoided using TAGS_EXCEPTION
 
-**ARCHIVE_DOWNLOADED** (True or False) do you want to archive articles after fetching
+**ARCHIVE_DOWNLOADED** (True or False) Do you want the recipe to mark articles as archived in Pocket after fetching them?
 
 **MAX_ARTICLES** (number) how many articles do you want to fetch in total
 
 **SORT_METHOD** ('oldest' or 'newest') way how the articles are sorted
 
-**OLDEST_ARTICLE** (number) fetch articles added (modified) in Pocket for number of days, 7 will give you articles added/modified in Pocket for the last week
+**OLDEST_ARTICLE** (number) Fetch articles added (modified) in Pocket for number of days, 7 will give you articles added/modified in Pocket for the last week
 
 **TO_PULL** ('all' or 'unread') What articles to pull? unread only or all?
 
-**ALLOW_DUPLICATES** (True or False) if True articles that have multiple tags matching those defined in TAGS are duplicated in each matched tag
+**ALLOW_DUPLICATES** (True or False) If True articles that have multiple tags matching those defined in TAGS are duplicated in each matched tag
         Eg.: TAGS = ['tag1','tag2'] then article1 that has both tags will appear in both sections tag1 and tag2.
 """
 # CONFIGURATION ###########################################################
