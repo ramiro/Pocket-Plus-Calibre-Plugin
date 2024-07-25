@@ -6,7 +6,7 @@ __version__ = '2.7.4'
 """
 2.7.4: Fix #46 KeyError: u'resolved_title'
 2.7.3: Replace tld with standard Python way (not as good as tld but works without extra package) if SECTIONS_BY_DOMAIN_USING_TLD = False
-2.7.2: Change default MAX_ARTICLES_PER_FEED to 30
+2.7.2: Change default MAX_ARTICLES to 30
 2.7.1: A fix for import tld
 2.7:   Introduce ~/.pocket.py local config system
 2.6.4: SECTIONS_BY_DOMAIN, an excellent implementation from @alvaroreig to make sections 
@@ -40,8 +40,7 @@ __version__ = '2.7.4'
 
 **ARCHIVE_DOWNLOADED** (True or False) do you want to archive articles after fetching 
 
-**MAX_ARTICLES_PER_FEED** (number) how many articles do you want to fetch for FEED (FEED could be also 
-considered as TAG, so for each TAG you this value will be applied.
+**MAX_ARTICLES** (number) how many articles do you want to fetch in total
 
 **SORT_METHOD** ('oldest' or 'newest') way how the articles are sorted
 
@@ -62,7 +61,7 @@ URL_KEYWORD_EXCEPTIONS = [] # [] or ['keyword1', 'keyword2']
 SECTIONS_BY_DOMAIN = False
 INCLUDE_UNTAGGED = True
 ARCHIVE_DOWNLOADED = True
-MAX_ARTICLES_PER_FEED = 30
+MAX_ARTICLES = 1000
 OLDEST_ARTICLE = 365
 SORT_METHOD = 'newest'
 SORT_WITHIN_TAG_BY_TITLE = False
@@ -78,7 +77,6 @@ if USE_GLOBAL_CONFIG:
     import os
     try:
         # variables as Python code into ~/.pocket.py to overwrite variables above, e.g.:
-        # MAX_ARTICLES_PER_FEED = 30
         user_path = os.path.expanduser("~")
         exec(open(user_path + '/.pocket.py').read())  # python3
     except: # FileNotFoundError: noooot perfect! 
@@ -171,7 +169,7 @@ class Pocket(BasicNewsRecipe):
         # User-configurable settings -----------------------------------------------
         tagsList = TAGS 
         oldest_article = OLDEST_ARTICLE
-        max_articles_per_feed = MAX_ARTICLES_PER_FEED
+        max_articles = MAX_ARTICLES
         archive_downloaded = ARCHIVE_DOWNLOADED
         include_untagged = INCLUDE_UNTAGGED    
         series_name = 'Pocket'
@@ -284,7 +282,7 @@ class Pocket(BasicNewsRecipe):
                                                 '"sort":"{4}"' '}}').format(
                                                 self.consumer_key,
                                                 self.config.token,
-                                                self.max_articles_per_feed * 1000,  # something "unlimited"
+                                                self.max_articles * 1000,  # something "unlimited"
                                                 int(time()) - 86400 * self.oldest_article,
                                                 self.sort_method, 
                                                 self.to_pull,
