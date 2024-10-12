@@ -105,10 +105,9 @@ and edit the Python code.
 
     Do you want the recipe to mark articles as archived in Pocket after
     fetching them?
-- **MAX_ARTICLES_PER_FEED** (number)
+- **MAX_ARTICLES** (number)
 
-    How many articles do you want to fetch for FEED (FEED could be also
-    considered as TAG, so for each TAG you this value will be applied.
+    How many articles do you want to fetch in total.
 - **SORT_METHOD** (`'oldest'` or `'newest'`)
 
     Way how the articles are sorted.
