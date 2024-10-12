@@ -74,7 +74,7 @@ if USE_GLOBAL_CONFIG:
     try:
         # variables as Python code into ~/.pocket.py to overwrite variables above, e.g.:
         user_path = os.path.expanduser("~")
-        exec(open(user_path + "/.pocket.py").read())  # python3
+        exec(open(os.path.join(user_path, ".pocket.py")).read())  # python3
     except:  # FileNotFoundError: noooot perfect!
         pass
 
